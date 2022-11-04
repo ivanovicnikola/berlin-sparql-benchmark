@@ -1,0 +1,3 @@
+18:23:53 INFO  Fuseki          :: [10] POST http://localhost:3030/BSBM/data
+18:23:58 INFO  Fuseki          :: [10] Filename: dataset.nt, Content-Type=application/octet-stream, Charset=null => N-Triples : Count=248947 Triples=248947 Quads=0
+18:23:58 INFO  Fuseki          :: [10] 200 OK (5,329 s)
