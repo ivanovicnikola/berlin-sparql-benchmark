@@ -8,3 +8,6 @@ Command for stats:
 
 Command for running 50 query mixes (+ 10 for warm-up): 
 TestDriver http://localhost:3030/bsbm/sparql
+
+Command for running the explore and update use case:
+-ucf usecases/exploreAndUpdate/sparql.txt -udataset dataset_update.nt -u http://localhost:3030/bsbm/update http://localhost:3030/bsbm/sparql
