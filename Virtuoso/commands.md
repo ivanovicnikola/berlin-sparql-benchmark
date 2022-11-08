@@ -2,4 +2,6 @@
 ./generate -fc -s ttl -fn dataset_1 -pc 1
 
 - Run zsh ./Scripts/load_data.sh to load data
-replace the system path
+replace the path to your system path
+
+- Run testdriver on http://localhost:8890/sparql with the following command:
