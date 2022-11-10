@@ -1,4 +1,0 @@
-LOAD TIME:
-	Load start time = 1667680614.3702357
-	Load end time = 1667680622.4378555
-	Load time = 8.067619800567627
