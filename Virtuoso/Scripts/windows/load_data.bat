@@ -1,0 +1,1 @@
+"C:\Program Files\OpenLink Software\Virtuoso OpenSource 7.2\bin\isql.exe" exec="ld_dir ('C:\\Users\\Bogdana\\Desktop\\ULB\\Advanced_Databases\\data', '*.ttl', 'http://localhost:8890/bsbm'); rdf_loader_run(); DELETE FROM DB.DBA.LOAD_LIST; rdf_load_stop(); checkpoint;"
