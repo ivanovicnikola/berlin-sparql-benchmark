@@ -1,0 +1,2 @@
+with <http://localhost:8890/bsbm> DELETE WHERE
+{ %Offer% ?p ?o }
