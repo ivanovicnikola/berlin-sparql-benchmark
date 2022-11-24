@@ -1,9 +1,9 @@
 Done. -- 0 msec.
 
-Done. -- 135219 msec.
+Done. -- 160781 msec.
+
+Done. -- 16 msec.
 
 Done. -- 0 msec.
 
-Done. -- 0 msec.
-
-Done. -- 1485 msec.
+Done. -- 4234 msec.
