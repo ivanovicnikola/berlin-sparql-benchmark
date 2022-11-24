@@ -1,6 +1,6 @@
-2022-11-24 01:33:46,983 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+2022-11-24 10:46:52,053 ALL   [main] benchmark.testdriver.SPARQLConnection: 
 
-	Query 1 of run 1 has been executed in 0,089510 seconds.
+	Query 1 of run 1 has been executed in 0,184853 seconds.
 
 	Query string:
 
@@ -31,9 +31,9 @@ Limit 10
 
 __________________________________________________________________________________
 
-2022-11-24 01:33:47,027 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+2022-11-24 10:46:52,116 ALL   [main] benchmark.testdriver.SPARQLConnection: 
 
-	Query 2 of run 1 has been executed in 0,045048 seconds.
+	Query 2 of run 1 has been executed in 0,062735 seconds.
 
 	Query string:
 
@@ -62,9 +62,9 @@ ________________________________________________________________________________
 
 __________________________________________________________________________________
 
-2022-11-24 01:33:47,231 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+2022-11-24 10:46:52,309 ALL   [main] benchmark.testdriver.SPARQLConnection: 
 
-	Query 3 of run 1 has been executed in 0,205654 seconds.
+	Query 3 of run 1 has been executed in 0,190058 seconds.
 
 	Query string:
 
@@ -103,9 +103,9 @@ ________________________________________________________________________________
 
 __________________________________________________________________________________
 
-2022-11-24 01:33:47,388 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+2022-11-24 10:46:52,609 ALL   [main] benchmark.testdriver.SPARQLConnection: 
 
-	Query 4 of run 1 has been executed in 0,150362 seconds.
+	Query 4 of run 1 has been executed in 0,295347 seconds.
 
 	Query string:
 
@@ -142,9 +142,9 @@ prefix xsd: <http://www.w3.org/2001/XMLSchema#>
 
 __________________________________________________________________________________
 
-2022-11-24 01:33:47,529 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+2022-11-24 10:46:52,964 ALL   [main] benchmark.testdriver.SPARQLConnection: 
 
-	Query 5 of run 1 has been executed in 0,150038 seconds.
+	Query 5 of run 1 has been executed in 0,368015 seconds.
 
 	Query string:
 
@@ -199,9 +199,9 @@ ________________________________________________________________________________
 
 __________________________________________________________________________________
 
-2022-11-24 01:33:47,686 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+2022-11-24 10:46:53,326 ALL   [main] benchmark.testdriver.SPARQLConnection: 
 
-	Query 6 of run 1 has been executed in 0,158498 seconds.
+	Query 6 of run 1 has been executed in 0,351797 seconds.
 
 	Query string:
 
@@ -239,9 +239,9 @@ ________________________________________________________________________________
 
 __________________________________________________________________________________
 
-2022-11-24 01:33:47,733 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+2022-11-24 10:46:53,388 ALL   [main] benchmark.testdriver.SPARQLConnection: 
 
-	Query 7 of run 1 has been executed in 0,046463 seconds.
+	Query 7 of run 1 has been executed in 0,068092 seconds.
 
 	Query string:
 
@@ -279,13 +279,13 @@ ________________________________________________________________________________
 
 __________________________________________________________________________________
 
-2022-11-24 01:33:47,827 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+2022-11-24 10:46:54,173 ALL   [main] benchmark.testdriver.SPARQLConnection: 
 
-	Query 8 of run 1 has been executed in 0,088517 seconds.
+	Query 8 of run 1 has been executed in 0,774265 seconds.
 
 	Query string:
 
-  prefix bsbm: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/>
+prefix bsbm: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/>
   prefix bsbm-inst: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/>
   prefix xsd: <http://www.w3.org/2001/XMLSchema#>
 
@@ -297,16 +297,17 @@ ________________________________________________________________________________
           ?offer bsbm:product ?product .
           ?offer bsbm:vendor ?vendor .
           ?offer bsbm:price ?price .
-          { Select ?product (avg(?price) As ?avgPrice)
+          { Select ?product (avg(xsd:float(str(?price))) As ?avgPrice)
             {
               ?product a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType37> .
               ?offer bsbm:product ?product .
+              ?offer bsbm:vendor ?vendor .
               ?offer bsbm:price ?price .
             }
             Group By ?product
           }
         } .
-        FILTER (?price < ?avgPrice)
+        FILTER (xsd:float(str(?price)) < ?avgPrice)
       }
       Group By ?vendor
     }
@@ -323,14 +324,14 @@ ________________________________________________________________________________
   limit 10
 
 
-	Query results (0 results): 
+	Query results (10 results): 
 
 
 __________________________________________________________________________________
 
-2022-11-24 01:33:47,922 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+2022-11-24 10:46:54,251 ALL   [main] benchmark.testdriver.SPARQLConnection: 
 
-	Query 1 of run 2 has been executed in 0,099414 seconds.
+	Query 1 of run 2 has been executed in 0,080865 seconds.
 
 	Query string:
 
@@ -361,9 +362,9 @@ Limit 10
 
 __________________________________________________________________________________
 
-2022-11-24 01:33:47,968 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+2022-11-24 10:46:54,298 ALL   [main] benchmark.testdriver.SPARQLConnection: 
 
-	Query 2 of run 2 has been executed in 0,045743 seconds.
+	Query 2 of run 2 has been executed in 0,042840 seconds.
 
 	Query string:
 
@@ -392,9 +393,9 @@ ________________________________________________________________________________
 
 __________________________________________________________________________________
 
-2022-11-24 01:33:48,633 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+2022-11-24 10:46:54,895 ALL   [main] benchmark.testdriver.SPARQLConnection: 
 
-	Query 3 of run 2 has been executed in 0,654549 seconds.
+	Query 3 of run 2 has been executed in 0,606850 seconds.
 
 	Query string:
 
@@ -433,9 +434,9 @@ ________________________________________________________________________________
 
 __________________________________________________________________________________
 
-2022-11-24 01:33:48,790 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+2022-11-24 10:46:55,177 ALL   [main] benchmark.testdriver.SPARQLConnection: 
 
-	Query 4 of run 2 has been executed in 0,161354 seconds.
+	Query 4 of run 2 has been executed in 0,280142 seconds.
 
 	Query string:
 
@@ -472,9 +473,9 @@ prefix xsd: <http://www.w3.org/2001/XMLSchema#>
 
 __________________________________________________________________________________
 
-2022-11-24 01:33:48,931 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+2022-11-24 10:46:55,523 ALL   [main] benchmark.testdriver.SPARQLConnection: 
 
-	Query 5 of run 2 has been executed in 0,146073 seconds.
+	Query 5 of run 2 has been executed in 0,337659 seconds.
 
 	Query string:
 
@@ -529,9 +530,9 @@ ________________________________________________________________________________
 
 __________________________________________________________________________________
 
-2022-11-24 01:33:49,103 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+2022-11-24 10:46:55,821 ALL   [main] benchmark.testdriver.SPARQLConnection: 
 
-	Query 6 of run 2 has been executed in 0,164581 seconds.
+	Query 6 of run 2 has been executed in 0,310250 seconds.
 
 	Query string:
 
@@ -569,9 +570,9 @@ ________________________________________________________________________________
 
 __________________________________________________________________________________
 
-2022-11-24 01:33:49,150 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+2022-11-24 10:46:55,899 ALL   [main] benchmark.testdriver.SPARQLConnection: 
 
-	Query 7 of run 2 has been executed in 0,054346 seconds.
+	Query 7 of run 2 has been executed in 0,069991 seconds.
 
 	Query string:
 
@@ -609,13 +610,13 @@ ________________________________________________________________________________
 
 __________________________________________________________________________________
 
-2022-11-24 01:33:49,260 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+2022-11-24 10:46:56,794 ALL   [main] benchmark.testdriver.SPARQLConnection: 
 
-	Query 8 of run 2 has been executed in 0,110376 seconds.
+	Query 8 of run 2 has been executed in 0,896693 seconds.
 
 	Query string:
 
-  prefix bsbm: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/>
+prefix bsbm: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/>
   prefix bsbm-inst: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/>
   prefix xsd: <http://www.w3.org/2001/XMLSchema#>
 
@@ -627,16 +628,17 @@ ________________________________________________________________________________
           ?offer bsbm:product ?product .
           ?offer bsbm:vendor ?vendor .
           ?offer bsbm:price ?price .
-          { Select ?product (avg(?price) As ?avgPrice)
+          { Select ?product (avg(xsd:float(str(?price))) As ?avgPrice)
             {
               ?product a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType11> .
               ?offer bsbm:product ?product .
+              ?offer bsbm:vendor ?vendor .
               ?offer bsbm:price ?price .
             }
             Group By ?product
           }
         } .
-        FILTER (?price < ?avgPrice)
+        FILTER (xsd:float(str(?price)) < ?avgPrice)
       }
       Group By ?vendor
     }
@@ -653,14 +655,14 @@ ________________________________________________________________________________
   limit 10
 
 
-	Query results (0 results): 
+	Query results (10 results): 
 
 
 __________________________________________________________________________________
 
-2022-11-24 01:33:49,307 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+2022-11-24 10:46:56,857 ALL   [main] benchmark.testdriver.SPARQLConnection: 
 
-	Query 1 of run 3 has been executed in 0,041868 seconds.
+	Query 1 of run 3 has been executed in 0,065279 seconds.
 
 	Query string:
 
@@ -691,9 +693,9 @@ Limit 10
 
 __________________________________________________________________________________
 
-2022-11-24 01:33:49,354 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+2022-11-24 10:46:56,904 ALL   [main] benchmark.testdriver.SPARQLConnection: 
 
-	Query 2 of run 3 has been executed in 0,042590 seconds.
+	Query 2 of run 3 has been executed in 0,047500 seconds.
 
 	Query string:
 
@@ -722,9 +724,9 @@ ________________________________________________________________________________
 
 __________________________________________________________________________________
 
-2022-11-24 01:33:49,762 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+2022-11-24 10:46:57,359 ALL   [main] benchmark.testdriver.SPARQLConnection: 
 
-	Query 3 of run 3 has been executed in 0,413365 seconds.
+	Query 3 of run 3 has been executed in 0,451753 seconds.
 
 	Query string:
 
@@ -763,9 +765,9 @@ ________________________________________________________________________________
 
 __________________________________________________________________________________
 
-2022-11-24 01:33:49,982 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+2022-11-24 10:46:57,721 ALL   [main] benchmark.testdriver.SPARQLConnection: 
 
-	Query 4 of run 3 has been executed in 0,213236 seconds.
+	Query 4 of run 3 has been executed in 0,360883 seconds.
 
 	Query string:
 
@@ -802,9 +804,9 @@ prefix xsd: <http://www.w3.org/2001/XMLSchema#>
 
 __________________________________________________________________________________
 
-2022-11-24 01:33:50,143 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+2022-11-24 10:46:58,081 ALL   [main] benchmark.testdriver.SPARQLConnection: 
 
-	Query 5 of run 3 has been executed in 0,160121 seconds.
+	Query 5 of run 3 has been executed in 0,357627 seconds.
 
 	Query string:
 
@@ -859,9 +861,9 @@ ________________________________________________________________________________
 
 __________________________________________________________________________________
 
-2022-11-24 01:33:50,253 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+2022-11-24 10:46:58,364 ALL   [main] benchmark.testdriver.SPARQLConnection: 
 
-	Query 6 of run 3 has been executed in 0,106966 seconds.
+	Query 6 of run 3 has been executed in 0,287272 seconds.
 
 	Query string:
 
@@ -899,9 +901,9 @@ ________________________________________________________________________________
 
 __________________________________________________________________________________
 
-2022-11-24 01:33:50,269 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+2022-11-24 10:46:58,411 ALL   [main] benchmark.testdriver.SPARQLConnection: 
 
-	Query 7 of run 3 has been executed in 0,029213 seconds.
+	Query 7 of run 3 has been executed in 0,039626 seconds.
 
 	Query string:
 
@@ -939,13 +941,13 @@ ________________________________________________________________________________
 
 __________________________________________________________________________________
 
-2022-11-24 01:33:50,395 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+2022-11-24 10:46:59,462 ALL   [main] benchmark.testdriver.SPARQLConnection: 
 
-	Query 8 of run 3 has been executed in 0,122532 seconds.
+	Query 8 of run 3 has been executed in 1,046108 seconds.
 
 	Query string:
 
-  prefix bsbm: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/>
+prefix bsbm: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/>
   prefix bsbm-inst: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/>
   prefix xsd: <http://www.w3.org/2001/XMLSchema#>
 
@@ -957,16 +959,17 @@ ________________________________________________________________________________
           ?offer bsbm:product ?product .
           ?offer bsbm:vendor ?vendor .
           ?offer bsbm:price ?price .
-          { Select ?product (avg(?price) As ?avgPrice)
+          { Select ?product (avg(xsd:float(str(?price))) As ?avgPrice)
             {
               ?product a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType11> .
               ?offer bsbm:product ?product .
+              ?offer bsbm:vendor ?vendor .
               ?offer bsbm:price ?price .
             }
             Group By ?product
           }
         } .
-        FILTER (?price < ?avgPrice)
+        FILTER (xsd:float(str(?price)) < ?avgPrice)
       }
       Group By ?vendor
     }
@@ -983,14 +986,14 @@ ________________________________________________________________________________
   limit 10
 
 
-	Query results (0 results): 
+	Query results (10 results): 
 
 
 __________________________________________________________________________________
 
-2022-11-24 01:33:50,662 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+2022-11-24 10:46:59,650 ALL   [main] benchmark.testdriver.SPARQLConnection: 
 
-	Query 1 of run 4 has been executed in 0,256445 seconds.
+	Query 1 of run 4 has been executed in 0,188000 seconds.
 
 	Query string:
 
@@ -1021,9 +1024,9 @@ Limit 10
 
 __________________________________________________________________________________
 
-2022-11-24 01:33:50,709 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+2022-11-24 10:46:59,728 ALL   [main] benchmark.testdriver.SPARQLConnection: 
 
-	Query 2 of run 4 has been executed in 0,053056 seconds.
+	Query 2 of run 4 has been executed in 0,077769 seconds.
 
 	Query string:
 
@@ -1052,9 +1055,9 @@ ________________________________________________________________________________
 
 __________________________________________________________________________________
 
-2022-11-24 01:33:50,913 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+2022-11-24 10:47:00,110 ALL   [main] benchmark.testdriver.SPARQLConnection: 
 
-	Query 3 of run 4 has been executed in 0,202982 seconds.
+	Query 3 of run 4 has been executed in 0,381516 seconds.
 
 	Query string:
 
@@ -1093,9 +1096,9 @@ ________________________________________________________________________________
 
 __________________________________________________________________________________
 
-2022-11-24 01:33:51,085 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+2022-11-24 10:47:00,499 ALL   [main] benchmark.testdriver.SPARQLConnection: 
 
-	Query 4 of run 4 has been executed in 0,167089 seconds.
+	Query 4 of run 4 has been executed in 0,389070 seconds.
 
 	Query string:
 
@@ -1132,9 +1135,9 @@ prefix xsd: <http://www.w3.org/2001/XMLSchema#>
 
 __________________________________________________________________________________
 
-2022-11-24 01:33:51,258 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+2022-11-24 10:47:00,957 ALL   [main] benchmark.testdriver.SPARQLConnection: 
 
-	Query 5 of run 4 has been executed in 0,177372 seconds.
+	Query 5 of run 4 has been executed in 0,460864 seconds.
 
 	Query string:
 
@@ -1189,9 +1192,9 @@ ________________________________________________________________________________
 
 __________________________________________________________________________________
 
-2022-11-24 01:33:51,352 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+2022-11-24 10:47:01,192 ALL   [main] benchmark.testdriver.SPARQLConnection: 
 
-	Query 6 of run 4 has been executed in 0,088458 seconds.
+	Query 6 of run 4 has been executed in 0,238964 seconds.
 
 	Query string:
 
@@ -1229,9 +1232,9 @@ ________________________________________________________________________________
 
 __________________________________________________________________________________
 
-2022-11-24 01:33:51,462 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+2022-11-24 10:47:01,301 ALL   [main] benchmark.testdriver.SPARQLConnection: 
 
-	Query 7 of run 4 has been executed in 0,110080 seconds.
+	Query 7 of run 4 has been executed in 0,112576 seconds.
 
 	Query string:
 
@@ -1269,13 +1272,13 @@ ________________________________________________________________________________
 
 __________________________________________________________________________________
 
-2022-11-24 01:33:51,571 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+2022-11-24 10:47:02,671 ALL   [main] benchmark.testdriver.SPARQLConnection: 
 
-	Query 8 of run 4 has been executed in 0,109093 seconds.
+	Query 8 of run 4 has been executed in 1,370124 seconds.
 
 	Query string:
 
-  prefix bsbm: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/>
+prefix bsbm: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/>
   prefix bsbm-inst: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/>
   prefix xsd: <http://www.w3.org/2001/XMLSchema#>
 
@@ -1287,16 +1290,17 @@ ________________________________________________________________________________
           ?offer bsbm:product ?product .
           ?offer bsbm:vendor ?vendor .
           ?offer bsbm:price ?price .
-          { Select ?product (avg(?price) As ?avgPrice)
+          { Select ?product (avg(xsd:float(str(?price))) As ?avgPrice)
             {
               ?product a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType11> .
               ?offer bsbm:product ?product .
+              ?offer bsbm:vendor ?vendor .
               ?offer bsbm:price ?price .
             }
             Group By ?product
           }
         } .
-        FILTER (?price < ?avgPrice)
+        FILTER (xsd:float(str(?price)) < ?avgPrice)
       }
       Group By ?vendor
     }
@@ -1313,14 +1317,14 @@ ________________________________________________________________________________
   limit 10
 
 
-	Query results (0 results): 
+	Query results (10 results): 
 
 
 __________________________________________________________________________________
 
-2022-11-24 01:33:51,650 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+2022-11-24 10:47:02,806 ALL   [main] benchmark.testdriver.SPARQLConnection: 
 
-	Query 1 of run 5 has been executed in 0,088415 seconds.
+	Query 1 of run 5 has been executed in 0,131587 seconds.
 
 	Query string:
 
@@ -1351,9 +1355,9 @@ Limit 10
 
 __________________________________________________________________________________
 
-2022-11-24 01:33:51,697 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+2022-11-24 10:47:02,853 ALL   [main] benchmark.testdriver.SPARQLConnection: 
 
-	Query 2 of run 5 has been executed in 0,041189 seconds.
+	Query 2 of run 5 has been executed in 0,050067 seconds.
 
 	Query string:
 
@@ -1382,9 +1386,9 @@ ________________________________________________________________________________
 
 __________________________________________________________________________________
 
-2022-11-24 01:33:52,074 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+2022-11-24 10:47:03,246 ALL   [main] benchmark.testdriver.SPARQLConnection: 
 
-	Query 3 of run 5 has been executed in 0,383735 seconds.
+	Query 3 of run 5 has been executed in 0,393490 seconds.
 
 	Query string:
 
@@ -1423,9 +1427,9 @@ ________________________________________________________________________________
 
 __________________________________________________________________________________
 
-2022-11-24 01:33:52,252 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+2022-11-24 10:47:03,591 ALL   [main] benchmark.testdriver.SPARQLConnection: 
 
-	Query 4 of run 5 has been executed in 0,169286 seconds.
+	Query 4 of run 5 has been executed in 0,334037 seconds.
 
 	Query string:
 
@@ -1462,9 +1466,9 @@ prefix xsd: <http://www.w3.org/2001/XMLSchema#>
 
 __________________________________________________________________________________
 
-2022-11-24 01:33:52,425 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+2022-11-24 10:47:03,952 ALL   [main] benchmark.testdriver.SPARQLConnection: 
 
-	Query 5 of run 5 has been executed in 0,173575 seconds.
+	Query 5 of run 5 has been executed in 0,368128 seconds.
 
 	Query string:
 
@@ -1519,9 +1523,9 @@ ________________________________________________________________________________
 
 __________________________________________________________________________________
 
-2022-11-24 01:33:52,708 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+2022-11-24 10:47:04,533 ALL   [main] benchmark.testdriver.SPARQLConnection: 
 
-	Query 6 of run 5 has been executed in 0,289798 seconds.
+	Query 6 of run 5 has been executed in 0,573081 seconds.
 
 	Query string:
 
@@ -1559,9 +1563,9 @@ ________________________________________________________________________________
 
 __________________________________________________________________________________
 
-2022-11-24 01:33:52,770 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+2022-11-24 10:47:04,580 ALL   [main] benchmark.testdriver.SPARQLConnection: 
 
-	Query 7 of run 5 has been executed in 0,056069 seconds.
+	Query 7 of run 5 has been executed in 0,053925 seconds.
 
 	Query string:
 
@@ -1594,18 +1598,18 @@ ________________________________________________________________________________
   }
 
 
-	Query results (5 results): 
+	Query results (2 results): 
 
 
 __________________________________________________________________________________
 
-2022-11-24 01:33:52,833 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+2022-11-24 10:47:05,223 ALL   [main] benchmark.testdriver.SPARQLConnection: 
 
-	Query 8 of run 5 has been executed in 0,068668 seconds.
+	Query 8 of run 5 has been executed in 0,632617 seconds.
 
 	Query string:
 
-  prefix bsbm: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/>
+prefix bsbm: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/>
   prefix bsbm-inst: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/>
   prefix xsd: <http://www.w3.org/2001/XMLSchema#>
 
@@ -1617,16 +1621,17 @@ ________________________________________________________________________________
           ?offer bsbm:product ?product .
           ?offer bsbm:vendor ?vendor .
           ?offer bsbm:price ?price .
-          { Select ?product (avg(?price) As ?avgPrice)
+          { Select ?product (avg(xsd:float(str(?price))) As ?avgPrice)
             {
               ?product a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType86> .
               ?offer bsbm:product ?product .
+              ?offer bsbm:vendor ?vendor .
               ?offer bsbm:price ?price .
             }
             Group By ?product
           }
         } .
-        FILTER (?price < ?avgPrice)
+        FILTER (xsd:float(str(?price)) < ?avgPrice)
       }
       Group By ?vendor
     }
@@ -1643,14 +1648,14 @@ ________________________________________________________________________________
   limit 10
 
 
-	Query results (0 results): 
+	Query results (10 results): 
 
 
 __________________________________________________________________________________
 
-2022-11-24 01:33:52,912 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+2022-11-24 10:47:05,286 ALL   [main] benchmark.testdriver.SPARQLConnection: 
 
-	Query 1 of run 6 has been executed in 0,069183 seconds.
+	Query 1 of run 6 has been executed in 0,065493 seconds.
 
 	Query string:
 
@@ -1681,9 +1686,9 @@ Limit 10
 
 __________________________________________________________________________________
 
-2022-11-24 01:33:52,959 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+2022-11-24 10:47:05,335 ALL   [main] benchmark.testdriver.SPARQLConnection: 
 
-	Query 2 of run 6 has been executed in 0,048307 seconds.
+	Query 2 of run 6 has been executed in 0,055173 seconds.
 
 	Query string:
 
@@ -1712,9 +1717,9 @@ ________________________________________________________________________________
 
 __________________________________________________________________________________
 
-2022-11-24 01:33:54,723 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+2022-11-24 10:47:06,416 ALL   [main] benchmark.testdriver.SPARQLConnection: 
 
-	Query 3 of run 6 has been executed in 1,755836 seconds.
+	Query 3 of run 6 has been executed in 1,085805 seconds.
 
 	Query string:
 
@@ -1753,9 +1758,9 @@ ________________________________________________________________________________
 
 __________________________________________________________________________________
 
-2022-11-24 01:33:54,911 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+2022-11-24 10:47:06,824 ALL   [main] benchmark.testdriver.SPARQLConnection: 
 
-	Query 4 of run 6 has been executed in 0,194534 seconds.
+	Query 4 of run 6 has been executed in 0,404252 seconds.
 
 	Query string:
 
@@ -1792,9 +1797,9 @@ prefix xsd: <http://www.w3.org/2001/XMLSchema#>
 
 __________________________________________________________________________________
 
-2022-11-24 01:33:55,067 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+2022-11-24 10:47:07,154 ALL   [main] benchmark.testdriver.SPARQLConnection: 
 
-	Query 5 of run 6 has been executed in 0,163257 seconds.
+	Query 5 of run 6 has been executed in 0,320073 seconds.
 
 	Query string:
 
@@ -1849,9 +1854,9 @@ ________________________________________________________________________________
 
 __________________________________________________________________________________
 
-2022-11-24 01:33:55,161 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+2022-11-24 10:47:07,374 ALL   [main] benchmark.testdriver.SPARQLConnection: 
 
-	Query 6 of run 6 has been executed in 0,093993 seconds.
+	Query 6 of run 6 has been executed in 0,224663 seconds.
 
 	Query string:
 
@@ -1889,9 +1894,9 @@ ________________________________________________________________________________
 
 __________________________________________________________________________________
 
-2022-11-24 01:33:55,209 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+2022-11-24 10:47:07,437 ALL   [main] benchmark.testdriver.SPARQLConnection: 
 
-	Query 7 of run 6 has been executed in 0,041896 seconds.
+	Query 7 of run 6 has been executed in 0,059746 seconds.
 
 	Query string:
 
@@ -1929,13 +1934,13 @@ ________________________________________________________________________________
 
 __________________________________________________________________________________
 
-2022-11-24 01:33:55,319 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+2022-11-24 10:47:08,190 ALL   [main] benchmark.testdriver.SPARQLConnection: 
 
-	Query 8 of run 6 has been executed in 0,109435 seconds.
+	Query 8 of run 6 has been executed in 0,757263 seconds.
 
 	Query string:
 
-  prefix bsbm: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/>
+prefix bsbm: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/>
   prefix bsbm-inst: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/>
   prefix xsd: <http://www.w3.org/2001/XMLSchema#>
 
@@ -1947,16 +1952,17 @@ ________________________________________________________________________________
           ?offer bsbm:product ?product .
           ?offer bsbm:vendor ?vendor .
           ?offer bsbm:price ?price .
-          { Select ?product (avg(?price) As ?avgPrice)
+          { Select ?product (avg(xsd:float(str(?price))) As ?avgPrice)
             {
               ?product a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType30> .
               ?offer bsbm:product ?product .
+              ?offer bsbm:vendor ?vendor .
               ?offer bsbm:price ?price .
             }
             Group By ?product
           }
         } .
-        FILTER (?price < ?avgPrice)
+        FILTER (xsd:float(str(?price)) < ?avgPrice)
       }
       Group By ?vendor
     }
@@ -1973,14 +1979,14 @@ ________________________________________________________________________________
   limit 10
 
 
-	Query results (0 results): 
+	Query results (10 results): 
 
 
 __________________________________________________________________________________
 
-2022-11-24 01:33:55,397 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+2022-11-24 10:47:08,257 ALL   [main] benchmark.testdriver.SPARQLConnection: 
 
-	Query 1 of run 7 has been executed in 0,071109 seconds.
+	Query 1 of run 7 has been executed in 0,064216 seconds.
 
 	Query string:
 
@@ -2011,9 +2017,9 @@ Limit 10
 
 __________________________________________________________________________________
 
-2022-11-24 01:33:55,429 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+2022-11-24 10:47:08,316 ALL   [main] benchmark.testdriver.SPARQLConnection: 
 
-	Query 2 of run 7 has been executed in 0,043704 seconds.
+	Query 2 of run 7 has been executed in 0,052477 seconds.
 
 	Query string:
 
@@ -2042,9 +2048,9 @@ ________________________________________________________________________________
 
 __________________________________________________________________________________
 
-2022-11-24 01:33:55,884 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+2022-11-24 10:47:08,758 ALL   [main] benchmark.testdriver.SPARQLConnection: 
 
-	Query 3 of run 7 has been executed in 0,447228 seconds.
+	Query 3 of run 7 has been executed in 0,450610 seconds.
 
 	Query string:
 
@@ -2083,9 +2089,9 @@ ________________________________________________________________________________
 
 __________________________________________________________________________________
 
-2022-11-24 01:33:57,034 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+2022-11-24 10:47:09,885 ALL   [main] benchmark.testdriver.SPARQLConnection: 
 
-	Query 4 of run 7 has been executed in 1,156581 seconds.
+	Query 4 of run 7 has been executed in 1,117585 seconds.
 
 	Query string:
 
@@ -2122,9 +2128,9 @@ prefix xsd: <http://www.w3.org/2001/XMLSchema#>
 
 __________________________________________________________________________________
 
-2022-11-24 01:33:57,207 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+2022-11-24 10:47:10,215 ALL   [main] benchmark.testdriver.SPARQLConnection: 
 
-	Query 5 of run 7 has been executed in 0,173300 seconds.
+	Query 5 of run 7 has been executed in 0,338911 seconds.
 
 	Query string:
 
@@ -2179,9 +2185,9 @@ ________________________________________________________________________________
 
 __________________________________________________________________________________
 
-2022-11-24 01:33:57,285 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+2022-11-24 10:47:10,388 ALL   [main] benchmark.testdriver.SPARQLConnection: 
 
-	Query 6 of run 7 has been executed in 0,072692 seconds.
+	Query 6 of run 7 has been executed in 0,164179 seconds.
 
 	Query string:
 
@@ -2219,9 +2225,9 @@ ________________________________________________________________________________
 
 __________________________________________________________________________________
 
-2022-11-24 01:33:57,317 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+2022-11-24 10:47:10,403 ALL   [main] benchmark.testdriver.SPARQLConnection: 
 
-	Query 7 of run 7 has been executed in 0,028732 seconds.
+	Query 7 of run 7 has been executed in 0,026796 seconds.
 
 	Query string:
 
@@ -2259,13 +2265,13 @@ ________________________________________________________________________________
 
 __________________________________________________________________________________
 
-2022-11-24 01:33:57,348 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+2022-11-24 10:47:10,780 ALL   [main] benchmark.testdriver.SPARQLConnection: 
 
-	Query 8 of run 7 has been executed in 0,025793 seconds.
+	Query 8 of run 7 has been executed in 0,377011 seconds.
 
 	Query string:
 
-  prefix bsbm: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/>
+prefix bsbm: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/>
   prefix bsbm-inst: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/>
   prefix xsd: <http://www.w3.org/2001/XMLSchema#>
 
@@ -2277,16 +2283,17 @@ ________________________________________________________________________________
           ?offer bsbm:product ?product .
           ?offer bsbm:vendor ?vendor .
           ?offer bsbm:price ?price .
-          { Select ?product (avg(?price) As ?avgPrice)
+          { Select ?product (avg(xsd:float(str(?price))) As ?avgPrice)
             {
               ?product a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType685> .
               ?offer bsbm:product ?product .
+              ?offer bsbm:vendor ?vendor .
               ?offer bsbm:price ?price .
             }
             Group By ?product
           }
         } .
-        FILTER (?price < ?avgPrice)
+        FILTER (xsd:float(str(?price)) < ?avgPrice)
       }
       Group By ?vendor
     }
@@ -2303,14 +2310,14 @@ ________________________________________________________________________________
   limit 10
 
 
-	Query results (0 results): 
+	Query results (10 results): 
 
 
 __________________________________________________________________________________
 
-2022-11-24 01:33:57,395 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+2022-11-24 10:47:10,827 ALL   [main] benchmark.testdriver.SPARQLConnection: 
 
-	Query 1 of run 8 has been executed in 0,048505 seconds.
+	Query 1 of run 8 has been executed in 0,048163 seconds.
 
 	Query string:
 
@@ -2341,9 +2348,9 @@ Limit 10
 
 __________________________________________________________________________________
 
-2022-11-24 01:33:57,427 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+2022-11-24 10:47:10,890 ALL   [main] benchmark.testdriver.SPARQLConnection: 
 
-	Query 2 of run 8 has been executed in 0,043101 seconds.
+	Query 2 of run 8 has been executed in 0,058139 seconds.
 
 	Query string:
 
@@ -2372,9 +2379,9 @@ ________________________________________________________________________________
 
 __________________________________________________________________________________
 
-2022-11-24 01:33:57,788 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+2022-11-24 10:47:11,251 ALL   [main] benchmark.testdriver.SPARQLConnection: 
 
-	Query 3 of run 8 has been executed in 0,355701 seconds.
+	Query 3 of run 8 has been executed in 0,359939 seconds.
 
 	Query string:
 
@@ -2413,9 +2420,9 @@ ________________________________________________________________________________
 
 __________________________________________________________________________________
 
-2022-11-24 01:33:58,264 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+2022-11-24 10:47:11,816 ALL   [main] benchmark.testdriver.SPARQLConnection: 
 
-	Query 4 of run 8 has been executed in 0,470485 seconds.
+	Query 4 of run 8 has been executed in 0,559093 seconds.
 
 	Query string:
 
@@ -2452,9 +2459,9 @@ prefix xsd: <http://www.w3.org/2001/XMLSchema#>
 
 __________________________________________________________________________________
 
-2022-11-24 01:33:58,421 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+2022-11-24 10:47:12,209 ALL   [main] benchmark.testdriver.SPARQLConnection: 
 
-	Query 5 of run 8 has been executed in 0,165485 seconds.
+	Query 5 of run 8 has been executed in 0,397573 seconds.
 
 	Query string:
 
@@ -2509,9 +2516,9 @@ ________________________________________________________________________________
 
 __________________________________________________________________________________
 
-2022-11-24 01:33:58,515 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+2022-11-24 10:47:12,491 ALL   [main] benchmark.testdriver.SPARQLConnection: 
 
-	Query 6 of run 8 has been executed in 0,086407 seconds.
+	Query 6 of run 8 has been executed in 0,281103 seconds.
 
 	Query string:
 
@@ -2549,9 +2556,9 @@ ________________________________________________________________________________
 
 __________________________________________________________________________________
 
-2022-11-24 01:33:58,562 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+2022-11-24 10:47:12,554 ALL   [main] benchmark.testdriver.SPARQLConnection: 
 
-	Query 7 of run 8 has been executed in 0,051203 seconds.
+	Query 7 of run 8 has been executed in 0,064865 seconds.
 
 	Query string:
 
@@ -2589,13 +2596,13 @@ ________________________________________________________________________________
 
 __________________________________________________________________________________
 
-2022-11-24 01:33:58,609 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+2022-11-24 10:47:13,168 ALL   [main] benchmark.testdriver.SPARQLConnection: 
 
-	Query 8 of run 8 has been executed in 0,039804 seconds.
+	Query 8 of run 8 has been executed in 0,610933 seconds.
 
 	Query string:
 
-  prefix bsbm: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/>
+prefix bsbm: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/>
   prefix bsbm-inst: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/>
   prefix xsd: <http://www.w3.org/2001/XMLSchema#>
 
@@ -2607,16 +2614,17 @@ ________________________________________________________________________________
           ?offer bsbm:product ?product .
           ?offer bsbm:vendor ?vendor .
           ?offer bsbm:price ?price .
-          { Select ?product (avg(?price) As ?avgPrice)
+          { Select ?product (avg(xsd:float(str(?price))) As ?avgPrice)
             {
               ?product a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType266> .
               ?offer bsbm:product ?product .
+              ?offer bsbm:vendor ?vendor .
               ?offer bsbm:price ?price .
             }
             Group By ?product
           }
         } .
-        FILTER (?price < ?avgPrice)
+        FILTER (xsd:float(str(?price)) < ?avgPrice)
       }
       Group By ?vendor
     }
@@ -2633,14 +2641,14 @@ ________________________________________________________________________________
   limit 10
 
 
-	Query results (0 results): 
+	Query results (10 results): 
 
 
 __________________________________________________________________________________
 
-2022-11-24 01:33:58,703 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+2022-11-24 10:47:13,260 ALL   [main] benchmark.testdriver.SPARQLConnection: 
 
-	Query 1 of run 9 has been executed in 0,094346 seconds.
+	Query 1 of run 9 has been executed in 0,088976 seconds.
 
 	Query string:
 
@@ -2671,9 +2679,9 @@ Limit 10
 
 __________________________________________________________________________________
 
-2022-11-24 01:33:58,735 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+2022-11-24 10:47:13,308 ALL   [main] benchmark.testdriver.SPARQLConnection: 
 
-	Query 2 of run 9 has been executed in 0,040993 seconds.
+	Query 2 of run 9 has been executed in 0,047657 seconds.
 
 	Query string:
 
@@ -2702,9 +2710,9 @@ ________________________________________________________________________________
 
 __________________________________________________________________________________
 
-2022-11-24 01:33:58,845 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+2022-11-24 10:47:13,449 ALL   [main] benchmark.testdriver.SPARQLConnection: 
 
-	Query 3 of run 9 has been executed in 0,106460 seconds.
+	Query 3 of run 9 has been executed in 0,148833 seconds.
 
 	Query string:
 
@@ -2743,9 +2751,9 @@ ________________________________________________________________________________
 
 __________________________________________________________________________________
 
-2022-11-24 01:33:59,017 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+2022-11-24 10:47:13,795 ALL   [main] benchmark.testdriver.SPARQLConnection: 
 
-	Query 4 of run 9 has been executed in 0,160983 seconds.
+	Query 4 of run 9 has been executed in 0,335232 seconds.
 
 	Query string:
 
@@ -2782,9 +2790,9 @@ prefix xsd: <http://www.w3.org/2001/XMLSchema#>
 
 __________________________________________________________________________________
 
-2022-11-24 01:33:59,174 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+2022-11-24 10:47:14,155 ALL   [main] benchmark.testdriver.SPARQLConnection: 
 
-	Query 5 of run 9 has been executed in 0,161612 seconds.
+	Query 5 of run 9 has been executed in 0,356192 seconds.
 
 	Query string:
 
@@ -2839,9 +2847,9 @@ ________________________________________________________________________________
 
 __________________________________________________________________________________
 
-2022-11-24 01:33:59,567 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+2022-11-24 10:47:14,895 ALL   [main] benchmark.testdriver.SPARQLConnection: 
 
-	Query 6 of run 9 has been executed in 0,392984 seconds.
+	Query 6 of run 9 has been executed in 0,752836 seconds.
 
 	Query string:
 
@@ -2879,9 +2887,9 @@ ________________________________________________________________________________
 
 __________________________________________________________________________________
 
-2022-11-24 01:33:59,614 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+2022-11-24 10:47:14,957 ALL   [main] benchmark.testdriver.SPARQLConnection: 
 
-	Query 7 of run 9 has been executed in 0,055977 seconds.
+	Query 7 of run 9 has been executed in 0,058780 seconds.
 
 	Query string:
 
@@ -2919,13 +2927,13 @@ ________________________________________________________________________________
 
 __________________________________________________________________________________
 
-2022-11-24 01:33:59,724 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+2022-11-24 10:47:15,711 ALL   [main] benchmark.testdriver.SPARQLConnection: 
 
-	Query 8 of run 9 has been executed in 0,099732 seconds.
+	Query 8 of run 9 has been executed in 0,756565 seconds.
 
 	Query string:
 
-  prefix bsbm: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/>
+prefix bsbm: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/>
   prefix bsbm-inst: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/>
   prefix xsd: <http://www.w3.org/2001/XMLSchema#>
 
@@ -2937,16 +2945,17 @@ ________________________________________________________________________________
           ?offer bsbm:product ?product .
           ?offer bsbm:vendor ?vendor .
           ?offer bsbm:price ?price .
-          { Select ?product (avg(?price) As ?avgPrice)
+          { Select ?product (avg(xsd:float(str(?price))) As ?avgPrice)
             {
               ?product a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType72> .
               ?offer bsbm:product ?product .
+              ?offer bsbm:vendor ?vendor .
               ?offer bsbm:price ?price .
             }
             Group By ?product
           }
         } .
-        FILTER (?price < ?avgPrice)
+        FILTER (xsd:float(str(?price)) < ?avgPrice)
       }
       Group By ?vendor
     }
@@ -2963,14 +2972,14 @@ ________________________________________________________________________________
   limit 10
 
 
-	Query results (0 results): 
+	Query results (10 results): 
 
 
 __________________________________________________________________________________
 
-2022-11-24 01:33:59,771 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+2022-11-24 10:47:15,774 ALL   [main] benchmark.testdriver.SPARQLConnection: 
 
-	Query 1 of run 10 has been executed in 0,051528 seconds.
+	Query 1 of run 10 has been executed in 0,055803 seconds.
 
 	Query string:
 
@@ -3001,9 +3010,9 @@ Limit 10
 
 __________________________________________________________________________________
 
-2022-11-24 01:33:59,812 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+2022-11-24 10:47:15,805 ALL   [main] benchmark.testdriver.SPARQLConnection: 
 
-	Query 2 of run 10 has been executed in 0,032747 seconds.
+	Query 2 of run 10 has been executed in 0,033371 seconds.
 
 	Query string:
 
@@ -3032,9 +3041,9 @@ ________________________________________________________________________________
 
 __________________________________________________________________________________
 
-2022-11-24 01:34:00,152 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+2022-11-24 10:47:16,166 ALL   [main] benchmark.testdriver.SPARQLConnection: 
 
-	Query 3 of run 10 has been executed in 0,339911 seconds.
+	Query 3 of run 10 has been executed in 0,356933 seconds.
 
 	Query string:
 
@@ -3073,9 +3082,9 @@ ________________________________________________________________________________
 
 __________________________________________________________________________________
 
-2022-11-24 01:34:00,952 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+2022-11-24 10:47:17,060 ALL   [main] benchmark.testdriver.SPARQLConnection: 
 
-	Query 4 of run 10 has been executed in 0,802785 seconds.
+	Query 4 of run 10 has been executed in 0,889836 seconds.
 
 	Query string:
 
@@ -3112,9 +3121,9 @@ prefix xsd: <http://www.w3.org/2001/XMLSchema#>
 
 __________________________________________________________________________________
 
-2022-11-24 01:34:01,156 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+2022-11-24 10:47:17,421 ALL   [main] benchmark.testdriver.SPARQLConnection: 
 
-	Query 5 of run 10 has been executed in 0,205551 seconds.
+	Query 5 of run 10 has been executed in 0,365733 seconds.
 
 	Query string:
 
@@ -3169,9 +3178,9 @@ ________________________________________________________________________________
 
 __________________________________________________________________________________
 
-2022-11-24 01:34:01,251 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+2022-11-24 10:47:17,656 ALL   [main] benchmark.testdriver.SPARQLConnection: 
 
-	Query 6 of run 10 has been executed in 0,098167 seconds.
+	Query 6 of run 10 has been executed in 0,231303 seconds.
 
 	Query string:
 
@@ -3209,9 +3218,9 @@ ________________________________________________________________________________
 
 __________________________________________________________________________________
 
-2022-11-24 01:34:01,282 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+2022-11-24 10:47:17,678 ALL   [main] benchmark.testdriver.SPARQLConnection: 
 
-	Query 7 of run 10 has been executed in 0,020137 seconds.
+	Query 7 of run 10 has been executed in 0,020821 seconds.
 
 	Query string:
 
@@ -3249,13 +3258,13 @@ ________________________________________________________________________________
 
 __________________________________________________________________________________
 
-2022-11-24 01:34:01,316 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+2022-11-24 10:47:18,096 ALL   [main] benchmark.testdriver.SPARQLConnection: 
 
-	Query 8 of run 10 has been executed in 0,033273 seconds.
+	Query 8 of run 10 has been executed in 0,417510 seconds.
 
 	Query string:
 
-  prefix bsbm: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/>
+prefix bsbm: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/>
   prefix bsbm-inst: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/>
   prefix xsd: <http://www.w3.org/2001/XMLSchema#>
 
@@ -3267,16 +3276,17 @@ ________________________________________________________________________________
           ?offer bsbm:product ?product .
           ?offer bsbm:vendor ?vendor .
           ?offer bsbm:price ?price .
-          { Select ?product (avg(?price) As ?avgPrice)
+          { Select ?product (avg(xsd:float(str(?price))) As ?avgPrice)
             {
               ?product a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType1423> .
               ?offer bsbm:product ?product .
+              ?offer bsbm:vendor ?vendor .
               ?offer bsbm:price ?price .
             }
             Group By ?product
           }
         } .
-        FILTER (?price < ?avgPrice)
+        FILTER (xsd:float(str(?price)) < ?avgPrice)
       }
       Group By ?vendor
     }
@@ -3293,99 +3303,99 @@ ________________________________________________________________________________
   limit 10
 
 
-	Query results (0 results): 
+	Query results (10 results): 
 
 
 __________________________________________________________________________________
 
-2022-11-24 01:34:01,316 ALL   [main] benchmark.testdriver.TestDriver: Scale factor:           284826
+2022-11-24 10:47:18,096 ALL   [main] benchmark.testdriver.TestDriver: Scale factor:           284826
 Number of warmup runs:  25
 Seed:                   9834533
 Number of query mix runs (without warmups): 10 times
-min/max Querymix runtime: 0.9341s / 2.4764s
-Total runtime:          14.389 seconds
-QMpH:                   2501.88 query mixes per hour
-CQET:                   1.43892 seconds average runtime of query mix
-CQET (geom.):           1.37938 seconds geometric mean runtime of query mix
+min/max Querymix runtime: 2.2952s / 3.2189s
+Total runtime:          26.193 seconds
+QMpH:                   1374.43 query mixes per hour
+CQET:                   2.61928 seconds average runtime of query mix
+CQET (geom.):           2.60627 seconds geometric mean runtime of query mix
 
 Metrics for Query:      1
 Count:                  10 times executed in whole run
-AQET:                   0.091032 seconds (arithmetic mean)
-AQET(geom.):            0.079272 seconds (geometric mean)
-QPS:                    10.99 Queries per second
-minQET/maxQET:          0.04186750s / 0.25644450s
+AQET:                   0.097324 seconds (arithmetic mean)
+AQET(geom.):            0.086800 seconds (geometric mean)
+QPS:                    10.28 Queries per second
+minQET/maxQET:          0.04816280s / 0.18799950s
 Average result count:   10.00
 min/max result count:   10 / 10
 Number of timeouts:     0
 
 Metrics for Query:      2
 Count:                  10 times executed in whole run
-AQET:                   0.043648 seconds (arithmetic mean)
-AQET(geom.):            0.043348 seconds (geometric mean)
-QPS:                    22.91 Queries per second
-minQET/maxQET:          0.03274720s / 0.05305580s
+AQET:                   0.052773 seconds (arithmetic mean)
+AQET(geom.):            0.051571 seconds (geometric mean)
+QPS:                    18.95 Queries per second
+minQET/maxQET:          0.03337070s / 0.07776910s
 Average result count:   10.00
 min/max result count:   10 / 10
 Number of timeouts:     0
 
 Metrics for Query:      3
 Count:                  10 times executed in whole run
-AQET:                   0.486542 seconds (arithmetic mean)
-AQET(geom.):            0.366568 seconds (geometric mean)
-QPS:                    2.06 Queries per second
-minQET/maxQET:          0.10646010s / 1.75583580s
+AQET:                   0.442579 seconds (arithmetic mean)
+AQET(geom.):            0.385868 seconds (geometric mean)
+QPS:                    2.26 Queries per second
+minQET/maxQET:          0.14883310s / 1.08580480s
 Average result count:   10.00
 min/max result count:   10 / 10
 Number of timeouts:     0
 
 Metrics for Query:      4
 Count:                  10 times executed in whole run
-AQET:                   0.364670 seconds (arithmetic mean)
-AQET(geom.):            0.269243 seconds (geometric mean)
-QPS:                    2.74 Queries per second
-minQET/maxQET:          0.15036220s / 1.15658140s
+AQET:                   0.496548 seconds (arithmetic mean)
+AQET(geom.):            0.443197 seconds (geometric mean)
+QPS:                    2.01 Queries per second
+minQET/maxQET:          0.28014210s / 1.11758490s
 Average result count:   94.00
 min/max result count:   60 / 100
 Number of timeouts:     0
 
 Metrics for Query:      5
 Count:                  10 times executed in whole run
-AQET:                   0.167638 seconds (arithmetic mean)
-AQET(geom.):            0.166933 seconds (geometric mean)
-QPS:                    5.97 Queries per second
-minQET/maxQET:          0.14607320s / 0.20555080s
+AQET:                   0.367078 seconds (arithmetic mean)
+AQET(geom.):            0.365338 seconds (geometric mean)
+QPS:                    2.72 Queries per second
+minQET/maxQET:          0.32007280s / 0.46086360s
 Average result count:   28.50
 min/max result count:   14 / 40
 Number of timeouts:     0
 
 Metrics for Query:      6
 Count:                  10 times executed in whole run
-AQET:                   0.155255 seconds (arithmetic mean)
-AQET(geom.):            0.132189 seconds (geometric mean)
-QPS:                    6.44 Queries per second
-minQET/maxQET:          0.07269160s / 0.39298440s
+AQET:                   0.341545 seconds (arithmetic mean)
+AQET(geom.):            0.308279 seconds (geometric mean)
+QPS:                    2.93 Queries per second
+minQET/maxQET:          0.16417930s / 0.75283560s
 Average result count:   39.90
 min/max result count:   10 / 105
 Number of timeouts:     0
 
 Metrics for Query:      7
 Count:                  10 times executed in whole run
-AQET:                   0.049412 seconds (arithmetic mean)
-AQET(geom.):            0.044670 seconds (geometric mean)
-QPS:                    20.24 Queries per second
-minQET/maxQET:          0.02013700s / 0.11008040s
-Average result count:   57.70
+AQET:                   0.057522 seconds (arithmetic mean)
+AQET(geom.):            0.052041 seconds (geometric mean)
+QPS:                    17.38 Queries per second
+minQET/maxQET:          0.02082100s / 0.11257580s
+Average result count:   57.40
 min/max result count:   0 / 260
 Number of timeouts:     0
 
 Metrics for Query:      8
 Count:                  10 times executed in whole run
-AQET:                   0.080722 seconds (arithmetic mean)
-AQET(geom.):            0.071191 seconds (geometric mean)
-QPS:                    12.39 Queries per second
-minQET/maxQET:          0.02579320s / 0.12253220s
-Average result count:   0.00
-min/max result count:   0 / 0
+AQET:                   0.763909 seconds (arithmetic mean)
+AQET(geom.):            0.714516 seconds (geometric mean)
+QPS:                    1.31 Queries per second
+minQET/maxQET:          0.37701060s / 1.37012400s
+Average result count:   10.00
+min/max result count:   10 / 10
 Number of timeouts:     0
 
 
