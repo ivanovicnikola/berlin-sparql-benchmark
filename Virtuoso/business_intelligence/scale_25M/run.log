@@ -1,0 +1,3391 @@
+2022-11-24 01:14:12,467 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+
+	Query 1 of run 1 has been executed in 0,025870 seconds.
+
+	Query string:
+
+prefix bsbm: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/>
+prefix rev: <http://purl.org/stuff/rev#>
+
+Select ?productType ?reviewCount
+{
+ { Select ?productType (count(?review) As ?reviewCount)
+  {
+   ?productType a bsbm:ProductType .
+   ?product a ?productType .
+   ?product bsbm:producer ?producer .
+   ?producer bsbm:country <http://downlode.org/rdf/iso-3166/countries#GB> .
+   ?review bsbm:reviewFor ?product .
+   ?review rev:reviewer ?reviewer .
+   ?reviewer bsbm:country <http://downlode.org/rdf/iso-3166/countries#US> .
+  }
+  Group By ?productType
+ }
+}
+Order By desc(?reviewCount) ?productType
+Limit 10
+
+
+	Query results (10 results): 
+
+
+__________________________________________________________________________________
+
+2022-11-24 01:14:12,483 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+
+	Query 2 of run 1 has been executed in 0,011004 seconds.
+
+	Query string:
+
+  prefix bsbm: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/> 
+
+  SELECT ?otherProduct ?sameFeatures
+  {
+    ?otherProduct a bsbm:Product .
+    FILTER(?otherProduct != <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromProducer766/Product37987>)
+    {
+      SELECT ?otherProduct (count(?otherFeature) As ?sameFeatures)
+      {
+        <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromProducer766/Product37987> bsbm:productFeature ?feature .
+        ?otherProduct bsbm:productFeature ?otherFeature .
+        FILTER(?feature=?otherFeature)
+      }
+      Group By ?otherProduct
+    }
+  }
+  Order By desc(?sameFeatures) ?otherProduct
+  Limit 10
+
+
+	Query results (10 results): 
+
+
+__________________________________________________________________________________
+
+2022-11-24 01:14:12,514 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+
+	Query 3 of run 1 has been executed in 0,033630 seconds.
+
+	Query string:
+
+  prefix bsbm: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/>
+  prefix bsbm-inst: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/>
+  prefix rev: <http://purl.org/stuff/rev#>
+  prefix dc: <http://purl.org/dc/elements/1.1/>
+  prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+
+  Select ?product (xsd:float(?monthCount)/?monthBeforeCount As ?ratio)
+  {
+    { Select ?product (count(?review) As ?monthCount)
+      {
+        ?review bsbm:reviewFor ?product .
+        ?review dc:date ?date .
+        Filter(?date >= "2007-09-19"^^<http://www.w3.org/2001/XMLSchema#date> && ?date < "2007-10-17"^^<http://www.w3.org/2001/XMLSchema#date>) 
+      }
+      Group By ?product
+    }  {
+      Select ?product (count(?review) As ?monthBeforeCount)
+      {
+        ?review bsbm:reviewFor ?product .
+        ?review dc:date ?date .
+        Filter(?date >= "2007-08-22"^^<http://www.w3.org/2001/XMLSchema#date> && ?date < "2007-09-19"^^<http://www.w3.org/2001/XMLSchema#date>) #
+      }
+      Group By ?product
+      Having (count(?review)>0)
+    }
+  }
+  Order By desc(xsd:float(?monthCount) / ?monthBeforeCount) ?product
+  Limit 10
+
+
+	Query results (10 results): 
+
+
+__________________________________________________________________________________
+
+2022-11-24 01:14:12,561 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+
+	Query 4 of run 1 has been executed in 0,051413 seconds.
+
+	Query string:
+
+prefix bsbm:<http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/>
+prefix bsbm-inst:<http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/>
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+
+ 
+ Select ?feature (((?sumF*(?countTotal-?countF))/(?countF*(?sumTotal-?sumF))) As ?priceRatio)
+  {
+    { Select (count(?price) As ?countTotal) (sum(xsd:float(xsd:string(?price))) As ?sumTotal)
+      {
+        ?product a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType45> .
+        ?offer bsbm:product ?product ;
+               bsbm:price ?price .
+      }
+    }
+    { Select ?feature (count(?price2) As ?countF) (sum(xsd:float(xsd:string(?price2))) As ?sumF)
+      {
+        ?product2 a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType45> ;
+                 bsbm:productFeature ?feature .
+        ?offer2 bsbm:product ?product2 ;
+               bsbm:price ?price2 .
+      }
+      Group By ?feature
+    }
+  }
+ Order By desc(?priceRatio) ?feature
+ Limit 100
+
+
+	Query results (100 results): 
+
+
+__________________________________________________________________________________
+
+2022-11-24 01:14:12,640 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+
+	Query 5 of run 1 has been executed in 0,078275 seconds.
+
+	Query string:
+
+  prefix bsbm:
+<http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/>
+ prefix bsbm-inst:
+<http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/>
+ prefix rev: <http://purl.org/stuff/rev#>
+ prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+
+ Select ?country ?product ?nrOfReviews ?avgPrice
+ {
+   { Select ?country (max(?nrOfReviews) As ?maxReviews)
+     {
+       { Select ?country ?product (count(?review) As ?nrOfReviews)
+         {
+           ?product a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType6> .
+           ?review bsbm:reviewFor ?product ;
+                   rev:reviewer ?reviewer .
+           ?reviewer bsbm:country ?country .
+         }
+         Group By ?country ?product
+       }
+     }
+     Group By ?country
+   }
+   { Select ?product (avg(?price) As ?avgPrice)
+     {
+       ?product a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType6> .
+       ?offer bsbm:product ?product .
+       ?offer bsbm:price ?price .
+     }
+     Group By ?product
+   }
+   { Select ?country ?product (count(?review) As ?nrOfReviews)
+     {
+       ?product a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType6> .
+       ?review bsbm:reviewFor ?product .
+       ?review rev:reviewer ?reviewer .
+       ?reviewer bsbm:country ?country .
+     }
+     Group By ?country ?product
+   }
+   FILTER(?nrOfReviews=?maxReviews)
+ }
+ Order By desc(?nrOfReviews) ?country ?product
+
+
+
+	Query results (33 results): 
+
+
+__________________________________________________________________________________
+
+2022-11-24 01:14:12,923 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+
+	Query 6 of run 1 has been executed in 0,280814 seconds.
+
+	Query string:
+
+  prefix bsbm: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/>
+  prefix bsbm-inst: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/>
+  prefix rev: <http://purl.org/stuff/rev#>
+  prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+
+  Select ?reviewer (avg(xsd:float(?score)) As ?reviewerAvgScore)
+  {
+    { Select (avg(xsd:float(?score)) As ?avgScore)
+      {
+        ?product bsbm:producer <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromProducer1113/Producer1113> .
+        ?review bsbm:reviewFor ?product .
+        { ?review bsbm:rating1 ?score . } UNION
+        { ?review bsbm:rating2 ?score . } UNION
+        { ?review bsbm:rating3 ?score . } UNION
+        { ?review bsbm:rating4 ?score . }
+      }
+    }
+    ?product bsbm:producer <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromProducer1113/Producer1113> .
+    ?review bsbm:reviewFor ?product .
+    ?review rev:reviewer ?reviewer .
+    { ?review bsbm:rating1 ?score . } UNION
+    { ?review bsbm:rating2 ?score . } UNION
+    { ?review bsbm:rating3 ?score . } UNION
+    { ?review bsbm:rating4 ?score . }
+  }
+  Group By ?reviewer
+  Having (avg(xsd:float(?score)) > min(?avgScore) * 1.5)
+
+
+	Query results (29 results): 
+
+
+__________________________________________________________________________________
+
+2022-11-24 01:14:12,938 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+
+	Query 7 of run 1 has been executed in 0,009619 seconds.
+
+	Query string:
+
+  prefix bsbm: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/>
+  prefix bsbm-inst: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/>
+  prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+
+  Select ?product
+  {
+    { Select ?product
+      { 
+        { Select ?product (count(?offer) As ?offerCount)
+          { 
+            ?product a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType56> .
+            ?offer bsbm:product ?product .
+          }
+          Group By ?product
+        }
+      }
+      Order By desc(?offerCount)
+      Limit 1000
+    }
+    FILTER NOT EXISTS
+    {
+      ?offer bsbm:product ?product .
+      ?offer bsbm:vendor ?vendor .
+      ?vendor bsbm:country ?country .
+      FILTER(?country=<http://downlode.org/rdf/iso-3166/countries#US>)
+    }
+  }
+
+
+	Query results (13 results): 
+
+
+__________________________________________________________________________________
+
+2022-11-24 01:14:12,954 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+
+	Query 8 of run 1 has been executed in 0,013803 seconds.
+
+	Query string:
+
+  prefix bsbm: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/>
+  prefix bsbm-inst: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/>
+  prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+
+  Select ?vendor (xsd:float(?belowAvg)/?offerCount As ?cheapExpensiveRatio)
+  {
+    { Select ?vendor (count(?offer) As ?belowAvg)
+      {
+        { ?product a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType277> .
+          ?offer bsbm:product ?product .
+          ?offer bsbm:vendor ?vendor .
+          ?offer bsbm:price ?price .
+          { Select ?product (avg(?price) As ?avgPrice)
+            {
+              ?product a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType277> .
+              ?offer bsbm:product ?product .
+              ?offer bsbm:price ?price .
+            }
+            Group By ?product
+          }
+        } .
+        FILTER (?price < ?avgPrice)
+      }
+      Group By ?vendor
+    }
+    { Select ?vendor (count(?offer) As ?offerCount)
+      {
+        ?product a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType277> .
+        ?offer bsbm:product ?product .
+        ?offer bsbm:vendor ?vendor .
+      }
+      Group By ?vendor
+    }
+  }
+  Order by desc(xsd:float(?belowAvg)/?offerCount) ?vendor
+  limit 10
+
+
+	Query results (0 results): 
+
+
+__________________________________________________________________________________
+
+2022-11-24 01:14:12,954 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+
+	Query 1 of run 2 has been executed in 0,011974 seconds.
+
+	Query string:
+
+prefix bsbm: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/>
+prefix rev: <http://purl.org/stuff/rev#>
+
+Select ?productType ?reviewCount
+{
+ { Select ?productType (count(?review) As ?reviewCount)
+  {
+   ?productType a bsbm:ProductType .
+   ?product a ?productType .
+   ?product bsbm:producer ?producer .
+   ?producer bsbm:country <http://downlode.org/rdf/iso-3166/countries#GB> .
+   ?review bsbm:reviewFor ?product .
+   ?review rev:reviewer ?reviewer .
+   ?reviewer bsbm:country <http://downlode.org/rdf/iso-3166/countries#JP> .
+  }
+  Group By ?productType
+ }
+}
+Order By desc(?reviewCount) ?productType
+Limit 10
+
+
+	Query results (10 results): 
+
+
+__________________________________________________________________________________
+
+2022-11-24 01:14:12,970 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+
+	Query 2 of run 2 has been executed in 0,013343 seconds.
+
+	Query string:
+
+  prefix bsbm: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/> 
+
+  SELECT ?otherProduct ?sameFeatures
+  {
+    ?otherProduct a bsbm:Product .
+    FILTER(?otherProduct != <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromProducer743/Product36743>)
+    {
+      SELECT ?otherProduct (count(?otherFeature) As ?sameFeatures)
+      {
+        <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromProducer743/Product36743> bsbm:productFeature ?feature .
+        ?otherProduct bsbm:productFeature ?otherFeature .
+        FILTER(?feature=?otherFeature)
+      }
+      Group By ?otherProduct
+    }
+  }
+  Order By desc(?sameFeatures) ?otherProduct
+  Limit 10
+
+
+	Query results (10 results): 
+
+
+__________________________________________________________________________________
+
+2022-11-24 01:14:13,095 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+
+	Query 3 of run 2 has been executed in 0,115024 seconds.
+
+	Query string:
+
+  prefix bsbm: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/>
+  prefix bsbm-inst: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/>
+  prefix rev: <http://purl.org/stuff/rev#>
+  prefix dc: <http://purl.org/dc/elements/1.1/>
+  prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+
+  Select ?product (xsd:float(?monthCount)/?monthBeforeCount As ?ratio)
+  {
+    { Select ?product (count(?review) As ?monthCount)
+      {
+        ?review bsbm:reviewFor ?product .
+        ?review dc:date ?date .
+        Filter(?date >= "2008-03-31"^^<http://www.w3.org/2001/XMLSchema#date> && ?date < "2008-04-28"^^<http://www.w3.org/2001/XMLSchema#date>) 
+      }
+      Group By ?product
+    }  {
+      Select ?product (count(?review) As ?monthBeforeCount)
+      {
+        ?review bsbm:reviewFor ?product .
+        ?review dc:date ?date .
+        Filter(?date >= "2008-03-03"^^<http://www.w3.org/2001/XMLSchema#date> && ?date < "2008-03-31"^^<http://www.w3.org/2001/XMLSchema#date>) #
+      }
+      Group By ?product
+      Having (count(?review)>0)
+    }
+  }
+  Order By desc(xsd:float(?monthCount) / ?monthBeforeCount) ?product
+  Limit 10
+
+
+	Query results (10 results): 
+
+
+__________________________________________________________________________________
+
+2022-11-24 01:14:13,127 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+
+	Query 4 of run 2 has been executed in 0,030226 seconds.
+
+	Query string:
+
+prefix bsbm:<http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/>
+prefix bsbm-inst:<http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/>
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+
+ 
+ Select ?feature (((?sumF*(?countTotal-?countF))/(?countF*(?sumTotal-?sumF))) As ?priceRatio)
+  {
+    { Select (count(?price) As ?countTotal) (sum(xsd:float(xsd:string(?price))) As ?sumTotal)
+      {
+        ?product a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType455> .
+        ?offer bsbm:product ?product ;
+               bsbm:price ?price .
+      }
+    }
+    { Select ?feature (count(?price2) As ?countF) (sum(xsd:float(xsd:string(?price2))) As ?sumF)
+      {
+        ?product2 a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType455> ;
+                 bsbm:productFeature ?feature .
+        ?offer2 bsbm:product ?product2 ;
+               bsbm:price ?price2 .
+      }
+      Group By ?feature
+    }
+  }
+ Order By desc(?priceRatio) ?feature
+ Limit 100
+
+
+	Query results (88 results): 
+
+
+__________________________________________________________________________________
+
+2022-11-24 01:14:13,189 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+
+	Query 5 of run 2 has been executed in 0,065722 seconds.
+
+	Query string:
+
+  prefix bsbm:
+<http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/>
+ prefix bsbm-inst:
+<http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/>
+ prefix rev: <http://purl.org/stuff/rev#>
+ prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+
+ Select ?country ?product ?nrOfReviews ?avgPrice
+ {
+   { Select ?country (max(?nrOfReviews) As ?maxReviews)
+     {
+       { Select ?country ?product (count(?review) As ?nrOfReviews)
+         {
+           ?product a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType11> .
+           ?review bsbm:reviewFor ?product ;
+                   rev:reviewer ?reviewer .
+           ?reviewer bsbm:country ?country .
+         }
+         Group By ?country ?product
+       }
+     }
+     Group By ?country
+   }
+   { Select ?product (avg(?price) As ?avgPrice)
+     {
+       ?product a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType11> .
+       ?offer bsbm:product ?product .
+       ?offer bsbm:price ?price .
+     }
+     Group By ?product
+   }
+   { Select ?country ?product (count(?review) As ?nrOfReviews)
+     {
+       ?product a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType11> .
+       ?review bsbm:reviewFor ?product .
+       ?review rev:reviewer ?reviewer .
+       ?reviewer bsbm:country ?country .
+     }
+     Group By ?country ?product
+   }
+   FILTER(?nrOfReviews=?maxReviews)
+ }
+ Order By desc(?nrOfReviews) ?country ?product
+
+
+
+	Query results (27 results): 
+
+
+__________________________________________________________________________________
+
+2022-11-24 01:14:13,598 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+
+	Query 6 of run 2 has been executed in 0,413753 seconds.
+
+	Query string:
+
+  prefix bsbm: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/>
+  prefix bsbm-inst: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/>
+  prefix rev: <http://purl.org/stuff/rev#>
+  prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+
+  Select ?reviewer (avg(xsd:float(?score)) As ?reviewerAvgScore)
+  {
+    { Select (avg(xsd:float(?score)) As ?avgScore)
+      {
+        ?product bsbm:producer <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromProducer168/Producer168> .
+        ?review bsbm:reviewFor ?product .
+        { ?review bsbm:rating1 ?score . } UNION
+        { ?review bsbm:rating2 ?score . } UNION
+        { ?review bsbm:rating3 ?score . } UNION
+        { ?review bsbm:rating4 ?score . }
+      }
+    }
+    ?product bsbm:producer <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromProducer168/Producer168> .
+    ?review bsbm:reviewFor ?product .
+    ?review rev:reviewer ?reviewer .
+    { ?review bsbm:rating1 ?score . } UNION
+    { ?review bsbm:rating2 ?score . } UNION
+    { ?review bsbm:rating3 ?score . } UNION
+    { ?review bsbm:rating4 ?score . }
+  }
+  Group By ?reviewer
+  Having (avg(xsd:float(?score)) > min(?avgScore) * 1.5)
+
+
+	Query results (20 results): 
+
+
+__________________________________________________________________________________
+
+2022-11-24 01:14:13,614 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+
+	Query 7 of run 2 has been executed in 0,007157 seconds.
+
+	Query string:
+
+  prefix bsbm: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/>
+  prefix bsbm-inst: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/>
+  prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+
+  Select ?product
+  {
+    { Select ?product
+      { 
+        { Select ?product (count(?offer) As ?offerCount)
+          { 
+            ?product a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType190> .
+            ?offer bsbm:product ?product .
+          }
+          Group By ?product
+        }
+      }
+      Order By desc(?offerCount)
+      Limit 1000
+    }
+    FILTER NOT EXISTS
+    {
+      ?offer bsbm:product ?product .
+      ?offer bsbm:vendor ?vendor .
+      ?vendor bsbm:country ?country .
+      FILTER(?country=<http://downlode.org/rdf/iso-3166/countries#US>)
+    }
+  }
+
+
+	Query results (2 results): 
+
+
+__________________________________________________________________________________
+
+2022-11-24 01:14:13,661 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+
+	Query 8 of run 2 has been executed in 0,046489 seconds.
+
+	Query string:
+
+  prefix bsbm: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/>
+  prefix bsbm-inst: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/>
+  prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+
+  Select ?vendor (xsd:float(?belowAvg)/?offerCount As ?cheapExpensiveRatio)
+  {
+    { Select ?vendor (count(?offer) As ?belowAvg)
+      {
+        { ?product a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType11> .
+          ?offer bsbm:product ?product .
+          ?offer bsbm:vendor ?vendor .
+          ?offer bsbm:price ?price .
+          { Select ?product (avg(?price) As ?avgPrice)
+            {
+              ?product a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType11> .
+              ?offer bsbm:product ?product .
+              ?offer bsbm:price ?price .
+            }
+            Group By ?product
+          }
+        } .
+        FILTER (?price < ?avgPrice)
+      }
+      Group By ?vendor
+    }
+    { Select ?vendor (count(?offer) As ?offerCount)
+      {
+        ?product a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType11> .
+        ?offer bsbm:product ?product .
+        ?offer bsbm:vendor ?vendor .
+      }
+      Group By ?vendor
+    }
+  }
+  Order by desc(xsd:float(?belowAvg)/?offerCount) ?vendor
+  limit 10
+
+
+	Query results (0 results): 
+
+
+__________________________________________________________________________________
+
+2022-11-24 01:14:13,661 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+
+	Query 1 of run 3 has been executed in 0,012356 seconds.
+
+	Query string:
+
+prefix bsbm: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/>
+prefix rev: <http://purl.org/stuff/rev#>
+
+Select ?productType ?reviewCount
+{
+ { Select ?productType (count(?review) As ?reviewCount)
+  {
+   ?productType a bsbm:ProductType .
+   ?product a ?productType .
+   ?product bsbm:producer ?producer .
+   ?producer bsbm:country <http://downlode.org/rdf/iso-3166/countries#AT> .
+   ?review bsbm:reviewFor ?product .
+   ?review rev:reviewer ?reviewer .
+   ?reviewer bsbm:country <http://downlode.org/rdf/iso-3166/countries#FR> .
+  }
+  Group By ?productType
+ }
+}
+Order By desc(?reviewCount) ?productType
+Limit 10
+
+
+	Query results (10 results): 
+
+
+__________________________________________________________________________________
+
+2022-11-24 01:14:13,677 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+
+	Query 2 of run 3 has been executed in 0,013791 seconds.
+
+	Query string:
+
+  prefix bsbm: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/> 
+
+  SELECT ?otherProduct ?sameFeatures
+  {
+    ?otherProduct a bsbm:Product .
+    FILTER(?otherProduct != <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromProducer170/Product8194>)
+    {
+      SELECT ?otherProduct (count(?otherFeature) As ?sameFeatures)
+      {
+        <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromProducer170/Product8194> bsbm:productFeature ?feature .
+        ?otherProduct bsbm:productFeature ?otherFeature .
+        FILTER(?feature=?otherFeature)
+      }
+      Group By ?otherProduct
+    }
+  }
+  Order By desc(?sameFeatures) ?otherProduct
+  Limit 10
+
+
+	Query results (10 results): 
+
+
+__________________________________________________________________________________
+
+2022-11-24 01:14:13,755 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+
+	Query 3 of run 3 has been executed in 0,079241 seconds.
+
+	Query string:
+
+  prefix bsbm: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/>
+  prefix bsbm-inst: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/>
+  prefix rev: <http://purl.org/stuff/rev#>
+  prefix dc: <http://purl.org/dc/elements/1.1/>
+  prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+
+  Select ?product (xsd:float(?monthCount)/?monthBeforeCount As ?ratio)
+  {
+    { Select ?product (count(?review) As ?monthCount)
+      {
+        ?review bsbm:reviewFor ?product .
+        ?review dc:date ?date .
+        Filter(?date >= "2008-01-24"^^<http://www.w3.org/2001/XMLSchema#date> && ?date < "2008-02-21"^^<http://www.w3.org/2001/XMLSchema#date>) 
+      }
+      Group By ?product
+    }  {
+      Select ?product (count(?review) As ?monthBeforeCount)
+      {
+        ?review bsbm:reviewFor ?product .
+        ?review dc:date ?date .
+        Filter(?date >= "2007-12-27"^^<http://www.w3.org/2001/XMLSchema#date> && ?date < "2008-01-24"^^<http://www.w3.org/2001/XMLSchema#date>) #
+      }
+      Group By ?product
+      Having (count(?review)>0)
+    }
+  }
+  Order By desc(xsd:float(?monthCount) / ?monthBeforeCount) ?product
+  Limit 10
+
+
+	Query results (10 results): 
+
+
+__________________________________________________________________________________
+
+2022-11-24 01:14:13,802 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+
+	Query 4 of run 3 has been executed in 0,033710 seconds.
+
+	Query string:
+
+prefix bsbm:<http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/>
+prefix bsbm-inst:<http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/>
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+
+ 
+ Select ?feature (((?sumF*(?countTotal-?countF))/(?countF*(?sumTotal-?sumF))) As ?priceRatio)
+  {
+    { Select (count(?price) As ?countTotal) (sum(xsd:float(xsd:string(?price))) As ?sumTotal)
+      {
+        ?product a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType119> .
+        ?offer bsbm:product ?product ;
+               bsbm:price ?price .
+      }
+    }
+    { Select ?feature (count(?price2) As ?countF) (sum(xsd:float(xsd:string(?price2))) As ?sumF)
+      {
+        ?product2 a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType119> ;
+                 bsbm:productFeature ?feature .
+        ?offer2 bsbm:product ?product2 ;
+               bsbm:price ?price2 .
+      }
+      Group By ?feature
+    }
+  }
+ Order By desc(?priceRatio) ?feature
+ Limit 100
+
+
+	Query results (94 results): 
+
+
+__________________________________________________________________________________
+
+2022-11-24 01:14:13,865 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+
+	Query 5 of run 3 has been executed in 0,072266 seconds.
+
+	Query string:
+
+  prefix bsbm:
+<http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/>
+ prefix bsbm-inst:
+<http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/>
+ prefix rev: <http://purl.org/stuff/rev#>
+ prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+
+ Select ?country ?product ?nrOfReviews ?avgPrice
+ {
+   { Select ?country (max(?nrOfReviews) As ?maxReviews)
+     {
+       { Select ?country ?product (count(?review) As ?nrOfReviews)
+         {
+           ?product a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType7> .
+           ?review bsbm:reviewFor ?product ;
+                   rev:reviewer ?reviewer .
+           ?reviewer bsbm:country ?country .
+         }
+         Group By ?country ?product
+       }
+     }
+     Group By ?country
+   }
+   { Select ?product (avg(?price) As ?avgPrice)
+     {
+       ?product a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType7> .
+       ?offer bsbm:product ?product .
+       ?offer bsbm:price ?price .
+     }
+     Group By ?product
+   }
+   { Select ?country ?product (count(?review) As ?nrOfReviews)
+     {
+       ?product a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType7> .
+       ?review bsbm:reviewFor ?product .
+       ?review rev:reviewer ?reviewer .
+       ?reviewer bsbm:country ?country .
+     }
+     Group By ?country ?product
+   }
+   FILTER(?nrOfReviews=?maxReviews)
+ }
+ Order By desc(?nrOfReviews) ?country ?product
+
+
+
+	Query results (23 results): 
+
+
+__________________________________________________________________________________
+
+2022-11-24 01:14:14,145 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+
+	Query 6 of run 3 has been executed in 0,270004 seconds.
+
+	Query string:
+
+  prefix bsbm: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/>
+  prefix bsbm-inst: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/>
+  prefix rev: <http://purl.org/stuff/rev#>
+  prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+
+  Select ?reviewer (avg(xsd:float(?score)) As ?reviewerAvgScore)
+  {
+    { Select (avg(xsd:float(?score)) As ?avgScore)
+      {
+        ?product bsbm:producer <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromProducer352/Producer352> .
+        ?review bsbm:reviewFor ?product .
+        { ?review bsbm:rating1 ?score . } UNION
+        { ?review bsbm:rating2 ?score . } UNION
+        { ?review bsbm:rating3 ?score . } UNION
+        { ?review bsbm:rating4 ?score . }
+      }
+    }
+    ?product bsbm:producer <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromProducer352/Producer352> .
+    ?review bsbm:reviewFor ?product .
+    ?review rev:reviewer ?reviewer .
+    { ?review bsbm:rating1 ?score . } UNION
+    { ?review bsbm:rating2 ?score . } UNION
+    { ?review bsbm:rating3 ?score . } UNION
+    { ?review bsbm:rating4 ?score . }
+  }
+  Group By ?reviewer
+  Having (avg(xsd:float(?score)) > min(?avgScore) * 1.5)
+
+
+	Query results (42 results): 
+
+
+__________________________________________________________________________________
+
+2022-11-24 01:14:14,164 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+
+	Query 7 of run 3 has been executed in 0,018753 seconds.
+
+	Query string:
+
+  prefix bsbm: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/>
+  prefix bsbm-inst: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/>
+  prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+
+  Select ?product
+  {
+    { Select ?product
+      { 
+        { Select ?product (count(?offer) As ?offerCount)
+          { 
+            ?product a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType2> .
+            ?offer bsbm:product ?product .
+          }
+          Group By ?product
+        }
+      }
+      Order By desc(?offerCount)
+      Limit 1000
+    }
+    FILTER NOT EXISTS
+    {
+      ?offer bsbm:product ?product .
+      ?offer bsbm:vendor ?vendor .
+      ?vendor bsbm:country ?country .
+      FILTER(?country=<http://downlode.org/rdf/iso-3166/countries#US>)
+    }
+  }
+
+
+	Query results (0 results): 
+
+
+__________________________________________________________________________________
+
+2022-11-24 01:14:14,598 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+
+	Query 8 of run 3 has been executed in 0,448239 seconds.
+
+	Query string:
+
+  prefix bsbm: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/>
+  prefix bsbm-inst: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/>
+  prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+
+  Select ?vendor (xsd:float(?belowAvg)/?offerCount As ?cheapExpensiveRatio)
+  {
+    { Select ?vendor (count(?offer) As ?belowAvg)
+      {
+        { ?product a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType1> .
+          ?offer bsbm:product ?product .
+          ?offer bsbm:vendor ?vendor .
+          ?offer bsbm:price ?price .
+          { Select ?product (avg(?price) As ?avgPrice)
+            {
+              ?product a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType1> .
+              ?offer bsbm:product ?product .
+              ?offer bsbm:price ?price .
+            }
+            Group By ?product
+          }
+        } .
+        FILTER (?price < ?avgPrice)
+      }
+      Group By ?vendor
+    }
+    { Select ?vendor (count(?offer) As ?offerCount)
+      {
+        ?product a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType1> .
+        ?offer bsbm:product ?product .
+        ?offer bsbm:vendor ?vendor .
+      }
+      Group By ?vendor
+    }
+  }
+  Order by desc(xsd:float(?belowAvg)/?offerCount) ?vendor
+  limit 10
+
+
+	Query results (0 results): 
+
+
+__________________________________________________________________________________
+
+2022-11-24 01:14:14,677 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+
+	Query 1 of run 4 has been executed in 0,066007 seconds.
+
+	Query string:
+
+prefix bsbm: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/>
+prefix rev: <http://purl.org/stuff/rev#>
+
+Select ?productType ?reviewCount
+{
+ { Select ?productType (count(?review) As ?reviewCount)
+  {
+   ?productType a bsbm:ProductType .
+   ?product a ?productType .
+   ?product bsbm:producer ?producer .
+   ?producer bsbm:country <http://downlode.org/rdf/iso-3166/countries#US> .
+   ?review bsbm:reviewFor ?product .
+   ?review rev:reviewer ?reviewer .
+   ?reviewer bsbm:country <http://downlode.org/rdf/iso-3166/countries#US> .
+  }
+  Group By ?productType
+ }
+}
+Order By desc(?reviewCount) ?productType
+Limit 10
+
+
+	Query results (10 results): 
+
+
+__________________________________________________________________________________
+
+2022-11-24 01:14:14,692 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+
+	Query 2 of run 4 has been executed in 0,016305 seconds.
+
+	Query string:
+
+  prefix bsbm: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/> 
+
+  SELECT ?otherProduct ?sameFeatures
+  {
+    ?otherProduct a bsbm:Product .
+    FILTER(?otherProduct != <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromProducer311/Product15123>)
+    {
+      SELECT ?otherProduct (count(?otherFeature) As ?sameFeatures)
+      {
+        <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromProducer311/Product15123> bsbm:productFeature ?feature .
+        ?otherProduct bsbm:productFeature ?otherFeature .
+        FILTER(?feature=?otherFeature)
+      }
+      Group By ?otherProduct
+    }
+  }
+  Order By desc(?sameFeatures) ?otherProduct
+  Limit 10
+
+
+	Query results (10 results): 
+
+
+__________________________________________________________________________________
+
+2022-11-24 01:14:14,724 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+
+	Query 3 of run 4 has been executed in 0,036773 seconds.
+
+	Query string:
+
+  prefix bsbm: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/>
+  prefix bsbm-inst: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/>
+  prefix rev: <http://purl.org/stuff/rev#>
+  prefix dc: <http://purl.org/dc/elements/1.1/>
+  prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+
+  Select ?product (xsd:float(?monthCount)/?monthBeforeCount As ?ratio)
+  {
+    { Select ?product (count(?review) As ?monthCount)
+      {
+        ?review bsbm:reviewFor ?product .
+        ?review dc:date ?date .
+        Filter(?date >= "2007-09-25"^^<http://www.w3.org/2001/XMLSchema#date> && ?date < "2007-10-23"^^<http://www.w3.org/2001/XMLSchema#date>) 
+      }
+      Group By ?product
+    }  {
+      Select ?product (count(?review) As ?monthBeforeCount)
+      {
+        ?review bsbm:reviewFor ?product .
+        ?review dc:date ?date .
+        Filter(?date >= "2007-08-28"^^<http://www.w3.org/2001/XMLSchema#date> && ?date < "2007-09-25"^^<http://www.w3.org/2001/XMLSchema#date>) #
+      }
+      Group By ?product
+      Having (count(?review)>0)
+    }
+  }
+  Order By desc(xsd:float(?monthCount) / ?monthBeforeCount) ?product
+  Limit 10
+
+
+	Query results (10 results): 
+
+
+__________________________________________________________________________________
+
+2022-11-24 01:14:14,786 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+
+	Query 4 of run 4 has been executed in 0,058573 seconds.
+
+	Query string:
+
+prefix bsbm:<http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/>
+prefix bsbm-inst:<http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/>
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+
+ 
+ Select ?feature (((?sumF*(?countTotal-?countF))/(?countF*(?sumTotal-?sumF))) As ?priceRatio)
+  {
+    { Select (count(?price) As ?countTotal) (sum(xsd:float(xsd:string(?price))) As ?sumTotal)
+      {
+        ?product a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType27> .
+        ?offer bsbm:product ?product ;
+               bsbm:price ?price .
+      }
+    }
+    { Select ?feature (count(?price2) As ?countF) (sum(xsd:float(xsd:string(?price2))) As ?sumF)
+      {
+        ?product2 a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType27> ;
+                 bsbm:productFeature ?feature .
+        ?offer2 bsbm:product ?product2 ;
+               bsbm:price ?price2 .
+      }
+      Group By ?feature
+    }
+  }
+ Order By desc(?priceRatio) ?feature
+ Limit 100
+
+
+	Query results (100 results): 
+
+
+__________________________________________________________________________________
+
+2022-11-24 01:14:14,839 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+
+	Query 5 of run 4 has been executed in 0,060004 seconds.
+
+	Query string:
+
+  prefix bsbm:
+<http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/>
+ prefix bsbm-inst:
+<http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/>
+ prefix rev: <http://purl.org/stuff/rev#>
+ prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+
+ Select ?country ?product ?nrOfReviews ?avgPrice
+ {
+   { Select ?country (max(?nrOfReviews) As ?maxReviews)
+     {
+       { Select ?country ?product (count(?review) As ?nrOfReviews)
+         {
+           ?product a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType598> .
+           ?review bsbm:reviewFor ?product ;
+                   rev:reviewer ?reviewer .
+           ?reviewer bsbm:country ?country .
+         }
+         Group By ?country ?product
+       }
+     }
+     Group By ?country
+   }
+   { Select ?product (avg(?price) As ?avgPrice)
+     {
+       ?product a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType598> .
+       ?offer bsbm:product ?product .
+       ?offer bsbm:price ?price .
+     }
+     Group By ?product
+   }
+   { Select ?country ?product (count(?review) As ?nrOfReviews)
+     {
+       ?product a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType598> .
+       ?review bsbm:reviewFor ?product .
+       ?review rev:reviewer ?reviewer .
+       ?reviewer bsbm:country ?country .
+     }
+     Group By ?country ?product
+   }
+   FILTER(?nrOfReviews=?maxReviews)
+ }
+ Order By desc(?nrOfReviews) ?country ?product
+
+
+
+	Query results (20 results): 
+
+
+__________________________________________________________________________________
+
+2022-11-24 01:14:15,059 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+
+	Query 6 of run 4 has been executed in 0,211937 seconds.
+
+	Query string:
+
+  prefix bsbm: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/>
+  prefix bsbm-inst: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/>
+  prefix rev: <http://purl.org/stuff/rev#>
+  prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+
+  Select ?reviewer (avg(xsd:float(?score)) As ?reviewerAvgScore)
+  {
+    { Select (avg(xsd:float(?score)) As ?avgScore)
+      {
+        ?product bsbm:producer <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromProducer1321/Producer1321> .
+        ?review bsbm:reviewFor ?product .
+        { ?review bsbm:rating1 ?score . } UNION
+        { ?review bsbm:rating2 ?score . } UNION
+        { ?review bsbm:rating3 ?score . } UNION
+        { ?review bsbm:rating4 ?score . }
+      }
+    }
+    ?product bsbm:producer <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromProducer1321/Producer1321> .
+    ?review bsbm:reviewFor ?product .
+    ?review rev:reviewer ?reviewer .
+    { ?review bsbm:rating1 ?score . } UNION
+    { ?review bsbm:rating2 ?score . } UNION
+    { ?review bsbm:rating3 ?score . } UNION
+    { ?review bsbm:rating4 ?score . }
+  }
+  Group By ?reviewer
+  Having (avg(xsd:float(?score)) > min(?avgScore) * 1.5)
+
+
+	Query results (4 results): 
+
+
+__________________________________________________________________________________
+
+2022-11-24 01:14:15,090 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+
+	Query 7 of run 4 has been executed in 0,026437 seconds.
+
+	Query string:
+
+  prefix bsbm: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/>
+  prefix bsbm-inst: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/>
+  prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+
+  Select ?product
+  {
+    { Select ?product
+      { 
+        { Select ?product (count(?offer) As ?offerCount)
+          { 
+            ?product a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType1> .
+            ?offer bsbm:product ?product .
+          }
+          Group By ?product
+        }
+      }
+      Order By desc(?offerCount)
+      Limit 1000
+    }
+    FILTER NOT EXISTS
+    {
+      ?offer bsbm:product ?product .
+      ?offer bsbm:vendor ?vendor .
+      ?vendor bsbm:country ?country .
+      FILTER(?country=<http://downlode.org/rdf/iso-3166/countries#US>)
+    }
+  }
+
+
+	Query results (0 results): 
+
+
+__________________________________________________________________________________
+
+2022-11-24 01:14:15,090 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+
+	Query 8 of run 4 has been executed in 0,012613 seconds.
+
+	Query string:
+
+  prefix bsbm: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/>
+  prefix bsbm-inst: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/>
+  prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+
+  Select ?vendor (xsd:float(?belowAvg)/?offerCount As ?cheapExpensiveRatio)
+  {
+    { Select ?vendor (count(?offer) As ?belowAvg)
+      {
+        { ?product a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType461> .
+          ?offer bsbm:product ?product .
+          ?offer bsbm:vendor ?vendor .
+          ?offer bsbm:price ?price .
+          { Select ?product (avg(?price) As ?avgPrice)
+            {
+              ?product a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType461> .
+              ?offer bsbm:product ?product .
+              ?offer bsbm:price ?price .
+            }
+            Group By ?product
+          }
+        } .
+        FILTER (?price < ?avgPrice)
+      }
+      Group By ?vendor
+    }
+    { Select ?vendor (count(?offer) As ?offerCount)
+      {
+        ?product a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType461> .
+        ?offer bsbm:product ?product .
+        ?offer bsbm:vendor ?vendor .
+      }
+      Group By ?vendor
+    }
+  }
+  Order by desc(xsd:float(?belowAvg)/?offerCount) ?vendor
+  limit 10
+
+
+	Query results (0 results): 
+
+
+__________________________________________________________________________________
+
+2022-11-24 01:14:15,106 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+
+	Query 1 of run 5 has been executed in 0,012414 seconds.
+
+	Query string:
+
+prefix bsbm: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/>
+prefix rev: <http://purl.org/stuff/rev#>
+
+Select ?productType ?reviewCount
+{
+ { Select ?productType (count(?review) As ?reviewCount)
+  {
+   ?productType a bsbm:ProductType .
+   ?product a ?productType .
+   ?product bsbm:producer ?producer .
+   ?producer bsbm:country <http://downlode.org/rdf/iso-3166/countries#GB> .
+   ?review bsbm:reviewFor ?product .
+   ?review rev:reviewer ?reviewer .
+   ?reviewer bsbm:country <http://downlode.org/rdf/iso-3166/countries#GB> .
+  }
+  Group By ?productType
+ }
+}
+Order By desc(?reviewCount) ?productType
+Limit 10
+
+
+	Query results (10 results): 
+
+
+__________________________________________________________________________________
+
+2022-11-24 01:14:15,122 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+
+	Query 2 of run 5 has been executed in 0,013463 seconds.
+
+	Query string:
+
+  prefix bsbm: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/> 
+
+  SELECT ?otherProduct ?sameFeatures
+  {
+    ?otherProduct a bsbm:Product .
+    FILTER(?otherProduct != <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromProducer230/Product11274>)
+    {
+      SELECT ?otherProduct (count(?otherFeature) As ?sameFeatures)
+      {
+        <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromProducer230/Product11274> bsbm:productFeature ?feature .
+        ?otherProduct bsbm:productFeature ?otherFeature .
+        FILTER(?feature=?otherFeature)
+      }
+      Group By ?otherProduct
+    }
+  }
+  Order By desc(?sameFeatures) ?otherProduct
+  Limit 10
+
+
+	Query results (10 results): 
+
+
+__________________________________________________________________________________
+
+2022-11-24 01:14:15,185 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+
+	Query 3 of run 5 has been executed in 0,066341 seconds.
+
+	Query string:
+
+  prefix bsbm: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/>
+  prefix bsbm-inst: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/>
+  prefix rev: <http://purl.org/stuff/rev#>
+  prefix dc: <http://purl.org/dc/elements/1.1/>
+  prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+
+  Select ?product (xsd:float(?monthCount)/?monthBeforeCount As ?ratio)
+  {
+    { Select ?product (count(?review) As ?monthCount)
+      {
+        ?review bsbm:reviewFor ?product .
+        ?review dc:date ?date .
+        Filter(?date >= "2008-01-03"^^<http://www.w3.org/2001/XMLSchema#date> && ?date < "2008-01-31"^^<http://www.w3.org/2001/XMLSchema#date>) 
+      }
+      Group By ?product
+    }  {
+      Select ?product (count(?review) As ?monthBeforeCount)
+      {
+        ?review bsbm:reviewFor ?product .
+        ?review dc:date ?date .
+        Filter(?date >= "2007-12-06"^^<http://www.w3.org/2001/XMLSchema#date> && ?date < "2008-01-03"^^<http://www.w3.org/2001/XMLSchema#date>) #
+      }
+      Group By ?product
+      Having (count(?review)>0)
+    }
+  }
+  Order By desc(xsd:float(?monthCount) / ?monthBeforeCount) ?product
+  Limit 10
+
+
+	Query results (10 results): 
+
+
+__________________________________________________________________________________
+
+2022-11-24 01:14:15,220 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+
+	Query 4 of run 5 has been executed in 0,031909 seconds.
+
+	Query string:
+
+prefix bsbm:<http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/>
+prefix bsbm-inst:<http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/>
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+
+ 
+ Select ?feature (((?sumF*(?countTotal-?countF))/(?countF*(?sumTotal-?sumF))) As ?priceRatio)
+  {
+    { Select (count(?price) As ?countTotal) (sum(xsd:float(xsd:string(?price))) As ?sumTotal)
+      {
+        ?product a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType165> .
+        ?offer bsbm:product ?product ;
+               bsbm:price ?price .
+      }
+    }
+    { Select ?feature (count(?price2) As ?countF) (sum(xsd:float(xsd:string(?price2))) As ?sumF)
+      {
+        ?product2 a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType165> ;
+                 bsbm:productFeature ?feature .
+        ?offer2 bsbm:product ?product2 ;
+               bsbm:price ?price2 .
+      }
+      Group By ?feature
+    }
+  }
+ Order By desc(?priceRatio) ?feature
+ Limit 100
+
+
+	Query results (82 results): 
+
+
+__________________________________________________________________________________
+
+2022-11-24 01:14:15,287 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+
+	Query 5 of run 5 has been executed in 0,059967 seconds.
+
+	Query string:
+
+  prefix bsbm:
+<http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/>
+ prefix bsbm-inst:
+<http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/>
+ prefix rev: <http://purl.org/stuff/rev#>
+ prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+
+ Select ?country ?product ?nrOfReviews ?avgPrice
+ {
+   { Select ?country (max(?nrOfReviews) As ?maxReviews)
+     {
+       { Select ?country ?product (count(?review) As ?nrOfReviews)
+         {
+           ?product a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType62> .
+           ?review bsbm:reviewFor ?product ;
+                   rev:reviewer ?reviewer .
+           ?reviewer bsbm:country ?country .
+         }
+         Group By ?country ?product
+       }
+     }
+     Group By ?country
+   }
+   { Select ?product (avg(?price) As ?avgPrice)
+     {
+       ?product a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType62> .
+       ?offer bsbm:product ?product .
+       ?offer bsbm:price ?price .
+     }
+     Group By ?product
+   }
+   { Select ?country ?product (count(?review) As ?nrOfReviews)
+     {
+       ?product a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType62> .
+       ?review bsbm:reviewFor ?product .
+       ?review rev:reviewer ?reviewer .
+       ?reviewer bsbm:country ?country .
+     }
+     Group By ?country ?product
+   }
+   FILTER(?nrOfReviews=?maxReviews)
+ }
+ Order By desc(?nrOfReviews) ?country ?product
+
+
+
+	Query results (39 results): 
+
+
+__________________________________________________________________________________
+
+2022-11-24 01:14:16,026 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+
+	Query 6 of run 5 has been executed in 0,738062 seconds.
+
+	Query string:
+
+  prefix bsbm: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/>
+  prefix bsbm-inst: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/>
+  prefix rev: <http://purl.org/stuff/rev#>
+  prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+
+  Select ?reviewer (avg(xsd:float(?score)) As ?reviewerAvgScore)
+  {
+    { Select (avg(xsd:float(?score)) As ?avgScore)
+      {
+        ?product bsbm:producer <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromProducer456/Producer456> .
+        ?review bsbm:reviewFor ?product .
+        { ?review bsbm:rating1 ?score . } UNION
+        { ?review bsbm:rating2 ?score . } UNION
+        { ?review bsbm:rating3 ?score . } UNION
+        { ?review bsbm:rating4 ?score . }
+      }
+    }
+    ?product bsbm:producer <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromProducer456/Producer456> .
+    ?review bsbm:reviewFor ?product .
+    ?review rev:reviewer ?reviewer .
+    { ?review bsbm:rating1 ?score . } UNION
+    { ?review bsbm:rating2 ?score . } UNION
+    { ?review bsbm:rating3 ?score . } UNION
+    { ?review bsbm:rating4 ?score . }
+  }
+  Group By ?reviewer
+  Having (avg(xsd:float(?score)) > min(?avgScore) * 1.5)
+
+
+	Query results (71 results): 
+
+
+__________________________________________________________________________________
+
+2022-11-24 01:14:16,026 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+
+	Query 7 of run 5 has been executed in 0,007099 seconds.
+
+	Query string:
+
+  prefix bsbm: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/>
+  prefix bsbm-inst: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/>
+  prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+
+  Select ?product
+  {
+    { Select ?product
+      { 
+        { Select ?product (count(?offer) As ?offerCount)
+          { 
+            ?product a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType194> .
+            ?offer bsbm:product ?product .
+          }
+          Group By ?product
+        }
+      }
+      Order By desc(?offerCount)
+      Limit 1000
+    }
+    FILTER NOT EXISTS
+    {
+      ?offer bsbm:product ?product .
+      ?offer bsbm:vendor ?vendor .
+      ?vendor bsbm:country ?country .
+      FILTER(?country=<http://downlode.org/rdf/iso-3166/countries#JP>)
+    }
+  }
+
+
+	Query results (34 results): 
+
+
+__________________________________________________________________________________
+
+2022-11-24 01:14:16,484 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+
+	Query 8 of run 5 has been executed in 0,449551 seconds.
+
+	Query string:
+
+  prefix bsbm: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/>
+  prefix bsbm-inst: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/>
+  prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+
+  Select ?vendor (xsd:float(?belowAvg)/?offerCount As ?cheapExpensiveRatio)
+  {
+    { Select ?vendor (count(?offer) As ?belowAvg)
+      {
+        { ?product a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType1> .
+          ?offer bsbm:product ?product .
+          ?offer bsbm:vendor ?vendor .
+          ?offer bsbm:price ?price .
+          { Select ?product (avg(?price) As ?avgPrice)
+            {
+              ?product a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType1> .
+              ?offer bsbm:product ?product .
+              ?offer bsbm:price ?price .
+            }
+            Group By ?product
+          }
+        } .
+        FILTER (?price < ?avgPrice)
+      }
+      Group By ?vendor
+    }
+    { Select ?vendor (count(?offer) As ?offerCount)
+      {
+        ?product a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType1> .
+        ?offer bsbm:product ?product .
+        ?offer bsbm:vendor ?vendor .
+      }
+      Group By ?vendor
+    }
+  }
+  Order by desc(xsd:float(?belowAvg)/?offerCount) ?vendor
+  limit 10
+
+
+	Query results (0 results): 
+
+
+__________________________________________________________________________________
+
+2022-11-24 01:14:16,500 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+
+	Query 1 of run 6 has been executed in 0,017885 seconds.
+
+	Query string:
+
+prefix bsbm: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/>
+prefix rev: <http://purl.org/stuff/rev#>
+
+Select ?productType ?reviewCount
+{
+ { Select ?productType (count(?review) As ?reviewCount)
+  {
+   ?productType a bsbm:ProductType .
+   ?product a ?productType .
+   ?product bsbm:producer ?producer .
+   ?producer bsbm:country <http://downlode.org/rdf/iso-3166/countries#KR> .
+   ?review bsbm:reviewFor ?product .
+   ?review rev:reviewer ?reviewer .
+   ?reviewer bsbm:country <http://downlode.org/rdf/iso-3166/countries#US> .
+  }
+  Group By ?productType
+ }
+}
+Order By desc(?reviewCount) ?productType
+Limit 10
+
+
+	Query results (10 results): 
+
+
+__________________________________________________________________________________
+
+2022-11-24 01:14:16,516 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+
+	Query 2 of run 6 has been executed in 0,016762 seconds.
+
+	Query string:
+
+  prefix bsbm: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/> 
+
+  SELECT ?otherProduct ?sameFeatures
+  {
+    ?otherProduct a bsbm:Product .
+    FILTER(?otherProduct != <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromProducer1246/Product62127>)
+    {
+      SELECT ?otherProduct (count(?otherFeature) As ?sameFeatures)
+      {
+        <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromProducer1246/Product62127> bsbm:productFeature ?feature .
+        ?otherProduct bsbm:productFeature ?otherFeature .
+        FILTER(?feature=?otherFeature)
+      }
+      Group By ?otherProduct
+    }
+  }
+  Order By desc(?sameFeatures) ?otherProduct
+  Limit 10
+
+
+	Query results (10 results): 
+
+
+__________________________________________________________________________________
+
+2022-11-24 01:14:16,642 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+
+	Query 3 of run 6 has been executed in 0,131152 seconds.
+
+	Query string:
+
+  prefix bsbm: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/>
+  prefix bsbm-inst: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/>
+  prefix rev: <http://purl.org/stuff/rev#>
+  prefix dc: <http://purl.org/dc/elements/1.1/>
+  prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+
+  Select ?product (xsd:float(?monthCount)/?monthBeforeCount As ?ratio)
+  {
+    { Select ?product (count(?review) As ?monthCount)
+      {
+        ?review bsbm:reviewFor ?product .
+        ?review dc:date ?date .
+        Filter(?date >= "2008-05-07"^^<http://www.w3.org/2001/XMLSchema#date> && ?date < "2008-06-04"^^<http://www.w3.org/2001/XMLSchema#date>) 
+      }
+      Group By ?product
+    }  {
+      Select ?product (count(?review) As ?monthBeforeCount)
+      {
+        ?review bsbm:reviewFor ?product .
+        ?review dc:date ?date .
+        Filter(?date >= "2008-04-09"^^<http://www.w3.org/2001/XMLSchema#date> && ?date < "2008-05-07"^^<http://www.w3.org/2001/XMLSchema#date>) #
+      }
+      Group By ?product
+      Having (count(?review)>0)
+    }
+  }
+  Order By desc(xsd:float(?monthCount) / ?monthBeforeCount) ?product
+  Limit 10
+
+
+	Query results (10 results): 
+
+
+__________________________________________________________________________________
+
+2022-11-24 01:14:16,704 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+
+	Query 4 of run 6 has been executed in 0,052319 seconds.
+
+	Query string:
+
+prefix bsbm:<http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/>
+prefix bsbm-inst:<http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/>
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+
+ 
+ Select ?feature (((?sumF*(?countTotal-?countF))/(?countF*(?sumTotal-?sumF))) As ?priceRatio)
+  {
+    { Select (count(?price) As ?countTotal) (sum(xsd:float(xsd:string(?price))) As ?sumTotal)
+      {
+        ?product a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType44> .
+        ?offer bsbm:product ?product ;
+               bsbm:price ?price .
+      }
+    }
+    { Select ?feature (count(?price2) As ?countF) (sum(xsd:float(xsd:string(?price2))) As ?sumF)
+      {
+        ?product2 a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType44> ;
+                 bsbm:productFeature ?feature .
+        ?offer2 bsbm:product ?product2 ;
+               bsbm:price ?price2 .
+      }
+      Group By ?feature
+    }
+  }
+ Order By desc(?priceRatio) ?feature
+ Limit 100
+
+
+	Query results (100 results): 
+
+
+__________________________________________________________________________________
+
+2022-11-24 01:14:16,767 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+
+	Query 5 of run 6 has been executed in 0,062198 seconds.
+
+	Query string:
+
+  prefix bsbm:
+<http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/>
+ prefix bsbm-inst:
+<http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/>
+ prefix rev: <http://purl.org/stuff/rev#>
+ prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+
+ Select ?country ?product ?nrOfReviews ?avgPrice
+ {
+   { Select ?country (max(?nrOfReviews) As ?maxReviews)
+     {
+       { Select ?country ?product (count(?review) As ?nrOfReviews)
+         {
+           ?product a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType10> .
+           ?review bsbm:reviewFor ?product ;
+                   rev:reviewer ?reviewer .
+           ?reviewer bsbm:country ?country .
+         }
+         Group By ?country ?product
+       }
+     }
+     Group By ?country
+   }
+   { Select ?product (avg(?price) As ?avgPrice)
+     {
+       ?product a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType10> .
+       ?offer bsbm:product ?product .
+       ?offer bsbm:price ?price .
+     }
+     Group By ?product
+   }
+   { Select ?country ?product (count(?review) As ?nrOfReviews)
+     {
+       ?product a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType10> .
+       ?review bsbm:reviewFor ?product .
+       ?review rev:reviewer ?reviewer .
+       ?reviewer bsbm:country ?country .
+     }
+     Group By ?country ?product
+   }
+   FILTER(?nrOfReviews=?maxReviews)
+ }
+ Order By desc(?nrOfReviews) ?country ?product
+
+
+
+	Query results (18 results): 
+
+
+__________________________________________________________________________________
+
+2022-11-24 01:14:16,955 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+
+	Query 6 of run 6 has been executed in 0,198824 seconds.
+
+	Query string:
+
+  prefix bsbm: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/>
+  prefix bsbm-inst: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/>
+  prefix rev: <http://purl.org/stuff/rev#>
+  prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+
+  Select ?reviewer (avg(xsd:float(?score)) As ?reviewerAvgScore)
+  {
+    { Select (avg(xsd:float(?score)) As ?avgScore)
+      {
+        ?product bsbm:producer <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromProducer1243/Producer1243> .
+        ?review bsbm:reviewFor ?product .
+        { ?review bsbm:rating1 ?score . } UNION
+        { ?review bsbm:rating2 ?score . } UNION
+        { ?review bsbm:rating3 ?score . } UNION
+        { ?review bsbm:rating4 ?score . }
+      }
+    }
+    ?product bsbm:producer <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromProducer1243/Producer1243> .
+    ?review bsbm:reviewFor ?product .
+    ?review rev:reviewer ?reviewer .
+    { ?review bsbm:rating1 ?score . } UNION
+    { ?review bsbm:rating2 ?score . } UNION
+    { ?review bsbm:rating3 ?score . } UNION
+    { ?review bsbm:rating4 ?score . }
+  }
+  Group By ?reviewer
+  Having (avg(xsd:float(?score)) > min(?avgScore) * 1.5)
+
+
+	Query results (14 results): 
+
+
+__________________________________________________________________________________
+
+2022-11-24 01:14:16,971 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+
+	Query 7 of run 6 has been executed in 0,007168 seconds.
+
+	Query string:
+
+  prefix bsbm: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/>
+  prefix bsbm-inst: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/>
+  prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+
+  Select ?product
+  {
+    { Select ?product
+      { 
+        { Select ?product (count(?offer) As ?offerCount)
+          { 
+            ?product a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType191> .
+            ?offer bsbm:product ?product .
+          }
+          Group By ?product
+        }
+      }
+      Order By desc(?offerCount)
+      Limit 1000
+    }
+    FILTER NOT EXISTS
+    {
+      ?offer bsbm:product ?product .
+      ?offer bsbm:vendor ?vendor .
+      ?vendor bsbm:country ?country .
+      FILTER(?country=<http://downlode.org/rdf/iso-3166/countries#CN>)
+    }
+  }
+
+
+	Query results (43 results): 
+
+
+__________________________________________________________________________________
+
+2022-11-24 01:14:17,033 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+
+	Query 8 of run 6 has been executed in 0,063397 seconds.
+
+	Query string:
+
+  prefix bsbm: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/>
+  prefix bsbm-inst: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/>
+  prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+
+  Select ?vendor (xsd:float(?belowAvg)/?offerCount As ?cheapExpensiveRatio)
+  {
+    { Select ?vendor (count(?offer) As ?belowAvg)
+      {
+        { ?product a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType10> .
+          ?offer bsbm:product ?product .
+          ?offer bsbm:vendor ?vendor .
+          ?offer bsbm:price ?price .
+          { Select ?product (avg(?price) As ?avgPrice)
+            {
+              ?product a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType10> .
+              ?offer bsbm:product ?product .
+              ?offer bsbm:price ?price .
+            }
+            Group By ?product
+          }
+        } .
+        FILTER (?price < ?avgPrice)
+      }
+      Group By ?vendor
+    }
+    { Select ?vendor (count(?offer) As ?offerCount)
+      {
+        ?product a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType10> .
+        ?offer bsbm:product ?product .
+        ?offer bsbm:vendor ?vendor .
+      }
+      Group By ?vendor
+    }
+  }
+  Order by desc(xsd:float(?belowAvg)/?offerCount) ?vendor
+  limit 10
+
+
+	Query results (0 results): 
+
+
+__________________________________________________________________________________
+
+2022-11-24 01:14:17,050 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+
+	Query 1 of run 7 has been executed in 0,020603 seconds.
+
+	Query string:
+
+prefix bsbm: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/>
+prefix rev: <http://purl.org/stuff/rev#>
+
+Select ?productType ?reviewCount
+{
+ { Select ?productType (count(?review) As ?reviewCount)
+  {
+   ?productType a bsbm:ProductType .
+   ?product a ?productType .
+   ?product bsbm:producer ?producer .
+   ?producer bsbm:country <http://downlode.org/rdf/iso-3166/countries#AT> .
+   ?review bsbm:reviewFor ?product .
+   ?review rev:reviewer ?reviewer .
+   ?reviewer bsbm:country <http://downlode.org/rdf/iso-3166/countries#US> .
+  }
+  Group By ?productType
+ }
+}
+Order By desc(?reviewCount) ?productType
+Limit 10
+
+
+	Query results (10 results): 
+
+
+__________________________________________________________________________________
+
+2022-11-24 01:14:17,065 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+
+	Query 2 of run 7 has been executed in 0,014523 seconds.
+
+	Query string:
+
+  prefix bsbm: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/> 
+
+  SELECT ?otherProduct ?sameFeatures
+  {
+    ?otherProduct a bsbm:Product .
+    FILTER(?otherProduct != <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromProducer866/Product43101>)
+    {
+      SELECT ?otherProduct (count(?otherFeature) As ?sameFeatures)
+      {
+        <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromProducer866/Product43101> bsbm:productFeature ?feature .
+        ?otherProduct bsbm:productFeature ?otherFeature .
+        FILTER(?feature=?otherFeature)
+      }
+      Group By ?otherProduct
+    }
+  }
+  Order By desc(?sameFeatures) ?otherProduct
+  Limit 10
+
+
+	Query results (10 results): 
+
+
+__________________________________________________________________________________
+
+2022-11-24 01:14:17,144 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+
+	Query 3 of run 7 has been executed in 0,081051 seconds.
+
+	Query string:
+
+  prefix bsbm: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/>
+  prefix bsbm-inst: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/>
+  prefix rev: <http://purl.org/stuff/rev#>
+  prefix dc: <http://purl.org/dc/elements/1.1/>
+  prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+
+  Select ?product (xsd:float(?monthCount)/?monthBeforeCount As ?ratio)
+  {
+    { Select ?product (count(?review) As ?monthCount)
+      {
+        ?review bsbm:reviewFor ?product .
+        ?review dc:date ?date .
+        Filter(?date >= "2008-01-31"^^<http://www.w3.org/2001/XMLSchema#date> && ?date < "2008-02-28"^^<http://www.w3.org/2001/XMLSchema#date>) 
+      }
+      Group By ?product
+    }  {
+      Select ?product (count(?review) As ?monthBeforeCount)
+      {
+        ?review bsbm:reviewFor ?product .
+        ?review dc:date ?date .
+        Filter(?date >= "2008-01-03"^^<http://www.w3.org/2001/XMLSchema#date> && ?date < "2008-01-31"^^<http://www.w3.org/2001/XMLSchema#date>) #
+      }
+      Group By ?product
+      Having (count(?review)>0)
+    }
+  }
+  Order By desc(xsd:float(?monthCount) / ?monthBeforeCount) ?product
+  Limit 10
+
+
+	Query results (10 results): 
+
+
+__________________________________________________________________________________
+
+2022-11-24 01:14:17,191 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+
+	Query 4 of run 7 has been executed in 0,045681 seconds.
+
+	Query string:
+
+prefix bsbm:<http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/>
+prefix bsbm-inst:<http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/>
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+
+ 
+ Select ?feature (((?sumF*(?countTotal-?countF))/(?countF*(?sumTotal-?sumF))) As ?priceRatio)
+  {
+    { Select (count(?price) As ?countTotal) (sum(xsd:float(xsd:string(?price))) As ?sumTotal)
+      {
+        ?product a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType55> .
+        ?offer bsbm:product ?product ;
+               bsbm:price ?price .
+      }
+    }
+    { Select ?feature (count(?price2) As ?countF) (sum(xsd:float(xsd:string(?price2))) As ?sumF)
+      {
+        ?product2 a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType55> ;
+                 bsbm:productFeature ?feature .
+        ?offer2 bsbm:product ?product2 ;
+               bsbm:price ?price2 .
+      }
+      Group By ?feature
+    }
+  }
+ Order By desc(?priceRatio) ?feature
+ Limit 100
+
+
+	Query results (100 results): 
+
+
+__________________________________________________________________________________
+
+2022-11-24 01:14:17,254 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+
+	Query 5 of run 7 has been executed in 0,062730 seconds.
+
+	Query string:
+
+  prefix bsbm:
+<http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/>
+ prefix bsbm-inst:
+<http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/>
+ prefix rev: <http://purl.org/stuff/rev#>
+ prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+
+ Select ?country ?product ?nrOfReviews ?avgPrice
+ {
+   { Select ?country (max(?nrOfReviews) As ?maxReviews)
+     {
+       { Select ?country ?product (count(?review) As ?nrOfReviews)
+         {
+           ?product a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType67> .
+           ?review bsbm:reviewFor ?product ;
+                   rev:reviewer ?reviewer .
+           ?reviewer bsbm:country ?country .
+         }
+         Group By ?country ?product
+       }
+     }
+     Group By ?country
+   }
+   { Select ?product (avg(?price) As ?avgPrice)
+     {
+       ?product a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType67> .
+       ?offer bsbm:product ?product .
+       ?offer bsbm:price ?price .
+     }
+     Group By ?product
+   }
+   { Select ?country ?product (count(?review) As ?nrOfReviews)
+     {
+       ?product a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType67> .
+       ?review bsbm:reviewFor ?product .
+       ?review rev:reviewer ?reviewer .
+       ?reviewer bsbm:country ?country .
+     }
+     Group By ?country ?product
+   }
+   FILTER(?nrOfReviews=?maxReviews)
+ }
+ Order By desc(?nrOfReviews) ?country ?product
+
+
+
+	Query results (39 results): 
+
+
+__________________________________________________________________________________
+
+2022-11-24 01:14:17,662 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+
+	Query 6 of run 7 has been executed in 0,402321 seconds.
+
+	Query string:
+
+  prefix bsbm: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/>
+  prefix bsbm-inst: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/>
+  prefix rev: <http://purl.org/stuff/rev#>
+  prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+
+  Select ?reviewer (avg(xsd:float(?score)) As ?reviewerAvgScore)
+  {
+    { Select (avg(xsd:float(?score)) As ?avgScore)
+      {
+        ?product bsbm:producer <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromProducer373/Producer373> .
+        ?review bsbm:reviewFor ?product .
+        { ?review bsbm:rating1 ?score . } UNION
+        { ?review bsbm:rating2 ?score . } UNION
+        { ?review bsbm:rating3 ?score . } UNION
+        { ?review bsbm:rating4 ?score . }
+      }
+    }
+    ?product bsbm:producer <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromProducer373/Producer373> .
+    ?review bsbm:reviewFor ?product .
+    ?review rev:reviewer ?reviewer .
+    { ?review bsbm:rating1 ?score . } UNION
+    { ?review bsbm:rating2 ?score . } UNION
+    { ?review bsbm:rating3 ?score . } UNION
+    { ?review bsbm:rating4 ?score . }
+  }
+  Group By ?reviewer
+  Having (avg(xsd:float(?score)) > min(?avgScore) * 1.5)
+
+
+	Query results (41 results): 
+
+
+__________________________________________________________________________________
+
+2022-11-24 01:14:17,662 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+
+	Query 7 of run 7 has been executed in 0,007259 seconds.
+
+	Query string:
+
+  prefix bsbm: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/>
+  prefix bsbm-inst: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/>
+  prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+
+  Select ?product
+  {
+    { Select ?product
+      { 
+        { Select ?product (count(?offer) As ?offerCount)
+          { 
+            ?product a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType339> .
+            ?offer bsbm:product ?product .
+          }
+          Group By ?product
+        }
+      }
+      Order By desc(?offerCount)
+      Limit 1000
+    }
+    FILTER NOT EXISTS
+    {
+      ?offer bsbm:product ?product .
+      ?offer bsbm:vendor ?vendor .
+      ?vendor bsbm:country ?country .
+      FILTER(?country=<http://downlode.org/rdf/iso-3166/countries#DE>)
+    }
+  }
+
+
+	Query results (43 results): 
+
+
+__________________________________________________________________________________
+
+2022-11-24 01:14:18,122 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+
+	Query 8 of run 7 has been executed in 0,460978 seconds.
+
+	Query string:
+
+  prefix bsbm: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/>
+  prefix bsbm-inst: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/>
+  prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+
+  Select ?vendor (xsd:float(?belowAvg)/?offerCount As ?cheapExpensiveRatio)
+  {
+    { Select ?vendor (count(?offer) As ?belowAvg)
+      {
+        { ?product a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType1> .
+          ?offer bsbm:product ?product .
+          ?offer bsbm:vendor ?vendor .
+          ?offer bsbm:price ?price .
+          { Select ?product (avg(?price) As ?avgPrice)
+            {
+              ?product a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType1> .
+              ?offer bsbm:product ?product .
+              ?offer bsbm:price ?price .
+            }
+            Group By ?product
+          }
+        } .
+        FILTER (?price < ?avgPrice)
+      }
+      Group By ?vendor
+    }
+    { Select ?vendor (count(?offer) As ?offerCount)
+      {
+        ?product a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType1> .
+        ?offer bsbm:product ?product .
+        ?offer bsbm:vendor ?vendor .
+      }
+      Group By ?vendor
+    }
+  }
+  Order by desc(xsd:float(?belowAvg)/?offerCount) ?vendor
+  limit 10
+
+
+	Query results (0 results): 
+
+
+__________________________________________________________________________________
+
+2022-11-24 01:14:18,142 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+
+	Query 1 of run 8 has been executed in 0,011661 seconds.
+
+	Query string:
+
+prefix bsbm: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/>
+prefix rev: <http://purl.org/stuff/rev#>
+
+Select ?productType ?reviewCount
+{
+ { Select ?productType (count(?review) As ?reviewCount)
+  {
+   ?productType a bsbm:ProductType .
+   ?product a ?productType .
+   ?product bsbm:producer ?producer .
+   ?producer bsbm:country <http://downlode.org/rdf/iso-3166/countries#JP> .
+   ?review bsbm:reviewFor ?product .
+   ?review rev:reviewer ?reviewer .
+   ?reviewer bsbm:country <http://downlode.org/rdf/iso-3166/countries#KR> .
+  }
+  Group By ?productType
+ }
+}
+Order By desc(?reviewCount) ?productType
+Limit 10
+
+
+	Query results (10 results): 
+
+
+__________________________________________________________________________________
+
+2022-11-24 01:14:18,154 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+
+	Query 2 of run 8 has been executed in 0,015059 seconds.
+
+	Query string:
+
+  prefix bsbm: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/> 
+
+  SELECT ?otherProduct ?sameFeatures
+  {
+    ?otherProduct a bsbm:Product .
+    FILTER(?otherProduct != <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromProducer292/Product14309>)
+    {
+      SELECT ?otherProduct (count(?otherFeature) As ?sameFeatures)
+      {
+        <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromProducer292/Product14309> bsbm:productFeature ?feature .
+        ?otherProduct bsbm:productFeature ?otherFeature .
+        FILTER(?feature=?otherFeature)
+      }
+      Group By ?otherProduct
+    }
+  }
+  Order By desc(?sameFeatures) ?otherProduct
+  Limit 10
+
+
+	Query results (10 results): 
+
+
+__________________________________________________________________________________
+
+2022-11-24 01:14:18,221 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+
+	Query 3 of run 8 has been executed in 0,062565 seconds.
+
+	Query string:
+
+  prefix bsbm: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/>
+  prefix bsbm-inst: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/>
+  prefix rev: <http://purl.org/stuff/rev#>
+  prefix dc: <http://purl.org/dc/elements/1.1/>
+  prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+
+  Select ?product (xsd:float(?monthCount)/?monthBeforeCount As ?ratio)
+  {
+    { Select ?product (count(?review) As ?monthCount)
+      {
+        ?review bsbm:reviewFor ?product .
+        ?review dc:date ?date .
+        Filter(?date >= "2007-12-27"^^<http://www.w3.org/2001/XMLSchema#date> && ?date < "2008-01-24"^^<http://www.w3.org/2001/XMLSchema#date>) 
+      }
+      Group By ?product
+    }  {
+      Select ?product (count(?review) As ?monthBeforeCount)
+      {
+        ?review bsbm:reviewFor ?product .
+        ?review dc:date ?date .
+        Filter(?date >= "2007-11-29"^^<http://www.w3.org/2001/XMLSchema#date> && ?date < "2007-12-27"^^<http://www.w3.org/2001/XMLSchema#date>) #
+      }
+      Group By ?product
+      Having (count(?review)>0)
+    }
+  }
+  Order By desc(xsd:float(?monthCount) / ?monthBeforeCount) ?product
+  Limit 10
+
+
+	Query results (10 results): 
+
+
+__________________________________________________________________________________
+
+2022-11-24 01:14:18,311 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+
+	Query 4 of run 8 has been executed in 0,088164 seconds.
+
+	Query string:
+
+prefix bsbm:<http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/>
+prefix bsbm-inst:<http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/>
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+
+ 
+ Select ?feature (((?sumF*(?countTotal-?countF))/(?countF*(?sumTotal-?sumF))) As ?priceRatio)
+  {
+    { Select (count(?price) As ?countTotal) (sum(xsd:float(xsd:string(?price))) As ?sumTotal)
+      {
+        ?product a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType10> .
+        ?offer bsbm:product ?product ;
+               bsbm:price ?price .
+      }
+    }
+    { Select ?feature (count(?price2) As ?countF) (sum(xsd:float(xsd:string(?price2))) As ?sumF)
+      {
+        ?product2 a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType10> ;
+                 bsbm:productFeature ?feature .
+        ?offer2 bsbm:product ?product2 ;
+               bsbm:price ?price2 .
+      }
+      Group By ?feature
+    }
+  }
+ Order By desc(?priceRatio) ?feature
+ Limit 100
+
+
+	Query results (100 results): 
+
+
+__________________________________________________________________________________
+
+2022-11-24 01:14:18,374 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+
+	Query 5 of run 8 has been executed in 0,067827 seconds.
+
+	Query string:
+
+  prefix bsbm:
+<http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/>
+ prefix bsbm-inst:
+<http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/>
+ prefix rev: <http://purl.org/stuff/rev#>
+ prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+
+ Select ?country ?product ?nrOfReviews ?avgPrice
+ {
+   { Select ?country (max(?nrOfReviews) As ?maxReviews)
+     {
+       { Select ?country ?product (count(?review) As ?nrOfReviews)
+         {
+           ?product a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType8> .
+           ?review bsbm:reviewFor ?product ;
+                   rev:reviewer ?reviewer .
+           ?reviewer bsbm:country ?country .
+         }
+         Group By ?country ?product
+       }
+     }
+     Group By ?country
+   }
+   { Select ?product (avg(?price) As ?avgPrice)
+     {
+       ?product a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType8> .
+       ?offer bsbm:product ?product .
+       ?offer bsbm:price ?price .
+     }
+     Group By ?product
+   }
+   { Select ?country ?product (count(?review) As ?nrOfReviews)
+     {
+       ?product a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType8> .
+       ?review bsbm:reviewFor ?product .
+       ?review rev:reviewer ?reviewer .
+       ?reviewer bsbm:country ?country .
+     }
+     Group By ?country ?product
+   }
+   FILTER(?nrOfReviews=?maxReviews)
+ }
+ Order By desc(?nrOfReviews) ?country ?product
+
+
+
+	Query results (34 results): 
+
+
+__________________________________________________________________________________
+
+2022-11-24 01:14:18,767 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+
+	Query 6 of run 8 has been executed in 0,397350 seconds.
+
+	Query string:
+
+  prefix bsbm: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/>
+  prefix bsbm-inst: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/>
+  prefix rev: <http://purl.org/stuff/rev#>
+  prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+
+  Select ?reviewer (avg(xsd:float(?score)) As ?reviewerAvgScore)
+  {
+    { Select (avg(xsd:float(?score)) As ?avgScore)
+      {
+        ?product bsbm:producer <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromProducer132/Producer132> .
+        ?review bsbm:reviewFor ?product .
+        { ?review bsbm:rating1 ?score . } UNION
+        { ?review bsbm:rating2 ?score . } UNION
+        { ?review bsbm:rating3 ?score . } UNION
+        { ?review bsbm:rating4 ?score . }
+      }
+    }
+    ?product bsbm:producer <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromProducer132/Producer132> .
+    ?review bsbm:reviewFor ?product .
+    ?review rev:reviewer ?reviewer .
+    { ?review bsbm:rating1 ?score . } UNION
+    { ?review bsbm:rating2 ?score . } UNION
+    { ?review bsbm:rating3 ?score . } UNION
+    { ?review bsbm:rating4 ?score . }
+  }
+  Group By ?reviewer
+  Having (avg(xsd:float(?score)) > min(?avgScore) * 1.5)
+
+
+	Query results (14 results): 
+
+
+__________________________________________________________________________________
+
+2022-11-24 01:14:18,798 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+
+	Query 7 of run 8 has been executed in 0,028051 seconds.
+
+	Query string:
+
+  prefix bsbm: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/>
+  prefix bsbm-inst: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/>
+  prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+
+  Select ?product
+  {
+    { Select ?product
+      { 
+        { Select ?product (count(?offer) As ?offerCount)
+          { 
+            ?product a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType1> .
+            ?offer bsbm:product ?product .
+          }
+          Group By ?product
+        }
+      }
+      Order By desc(?offerCount)
+      Limit 1000
+    }
+    FILTER NOT EXISTS
+    {
+      ?offer bsbm:product ?product .
+      ?offer bsbm:vendor ?vendor .
+      ?vendor bsbm:country ?country .
+      FILTER(?country=<http://downlode.org/rdf/iso-3166/countries#ES>)
+    }
+  }
+
+
+	Query results (128 results): 
+
+
+__________________________________________________________________________________
+
+2022-11-24 01:14:19,285 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+
+	Query 8 of run 8 has been executed in 0,479123 seconds.
+
+	Query string:
+
+  prefix bsbm: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/>
+  prefix bsbm-inst: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/>
+  prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+
+  Select ?vendor (xsd:float(?belowAvg)/?offerCount As ?cheapExpensiveRatio)
+  {
+    { Select ?vendor (count(?offer) As ?belowAvg)
+      {
+        { ?product a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType1> .
+          ?offer bsbm:product ?product .
+          ?offer bsbm:vendor ?vendor .
+          ?offer bsbm:price ?price .
+          { Select ?product (avg(?price) As ?avgPrice)
+            {
+              ?product a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType1> .
+              ?offer bsbm:product ?product .
+              ?offer bsbm:price ?price .
+            }
+            Group By ?product
+          }
+        } .
+        FILTER (?price < ?avgPrice)
+      }
+      Group By ?vendor
+    }
+    { Select ?vendor (count(?offer) As ?offerCount)
+      {
+        ?product a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType1> .
+        ?offer bsbm:product ?product .
+        ?offer bsbm:vendor ?vendor .
+      }
+      Group By ?vendor
+    }
+  }
+  Order by desc(xsd:float(?belowAvg)/?offerCount) ?vendor
+  limit 10
+
+
+	Query results (0 results): 
+
+
+__________________________________________________________________________________
+
+2022-11-24 01:14:19,300 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+
+	Query 1 of run 9 has been executed in 0,022438 seconds.
+
+	Query string:
+
+prefix bsbm: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/>
+prefix rev: <http://purl.org/stuff/rev#>
+
+Select ?productType ?reviewCount
+{
+ { Select ?productType (count(?review) As ?reviewCount)
+  {
+   ?productType a bsbm:ProductType .
+   ?product a ?productType .
+   ?product bsbm:producer ?producer .
+   ?producer bsbm:country <http://downlode.org/rdf/iso-3166/countries#JP> .
+   ?review bsbm:reviewFor ?product .
+   ?review rev:reviewer ?reviewer .
+   ?reviewer bsbm:country <http://downlode.org/rdf/iso-3166/countries#US> .
+  }
+  Group By ?productType
+ }
+}
+Order By desc(?reviewCount) ?productType
+Limit 10
+
+
+	Query results (10 results): 
+
+
+__________________________________________________________________________________
+
+2022-11-24 01:14:19,316 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+
+	Query 2 of run 9 has been executed in 0,011512 seconds.
+
+	Query string:
+
+  prefix bsbm: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/> 
+
+  SELECT ?otherProduct ?sameFeatures
+  {
+    ?otherProduct a bsbm:Product .
+    FILTER(?otherProduct != <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromProducer332/Product16180>)
+    {
+      SELECT ?otherProduct (count(?otherFeature) As ?sameFeatures)
+      {
+        <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromProducer332/Product16180> bsbm:productFeature ?feature .
+        ?otherProduct bsbm:productFeature ?otherFeature .
+        FILTER(?feature=?otherFeature)
+      }
+      Group By ?otherProduct
+    }
+  }
+  Order By desc(?sameFeatures) ?otherProduct
+  Limit 10
+
+
+	Query results (10 results): 
+
+
+__________________________________________________________________________________
+
+2022-11-24 01:14:19,331 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+
+	Query 3 of run 9 has been executed in 0,018135 seconds.
+
+	Query string:
+
+  prefix bsbm: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/>
+  prefix bsbm-inst: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/>
+  prefix rev: <http://purl.org/stuff/rev#>
+  prefix dc: <http://purl.org/dc/elements/1.1/>
+  prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+
+  Select ?product (xsd:float(?monthCount)/?monthBeforeCount As ?ratio)
+  {
+    { Select ?product (count(?review) As ?monthCount)
+      {
+        ?review bsbm:reviewFor ?product .
+        ?review dc:date ?date .
+        Filter(?date >= "2007-08-04"^^<http://www.w3.org/2001/XMLSchema#date> && ?date < "2007-09-01"^^<http://www.w3.org/2001/XMLSchema#date>) 
+      }
+      Group By ?product
+    }  {
+      Select ?product (count(?review) As ?monthBeforeCount)
+      {
+        ?review bsbm:reviewFor ?product .
+        ?review dc:date ?date .
+        Filter(?date >= "2007-07-07"^^<http://www.w3.org/2001/XMLSchema#date> && ?date < "2007-08-04"^^<http://www.w3.org/2001/XMLSchema#date>) #
+      }
+      Group By ?product
+      Having (count(?review)>0)
+    }
+  }
+  Order By desc(xsd:float(?monthCount) / ?monthBeforeCount) ?product
+  Limit 10
+
+
+	Query results (10 results): 
+
+
+__________________________________________________________________________________
+
+2022-11-24 01:14:19,363 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+
+	Query 4 of run 9 has been executed in 0,032874 seconds.
+
+	Query string:
+
+prefix bsbm:<http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/>
+prefix bsbm-inst:<http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/>
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+
+ 
+ Select ?feature (((?sumF*(?countTotal-?countF))/(?countF*(?sumTotal-?sumF))) As ?priceRatio)
+  {
+    { Select (count(?price) As ?countTotal) (sum(xsd:float(xsd:string(?price))) As ?sumTotal)
+      {
+        ?product a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType154> .
+        ?offer bsbm:product ?product ;
+               bsbm:price ?price .
+      }
+    }
+    { Select ?feature (count(?price2) As ?countF) (sum(xsd:float(xsd:string(?price2))) As ?sumF)
+      {
+        ?product2 a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType154> ;
+                 bsbm:productFeature ?feature .
+        ?offer2 bsbm:product ?product2 ;
+               bsbm:price ?price2 .
+      }
+      Group By ?feature
+    }
+  }
+ Order By desc(?priceRatio) ?feature
+ Limit 100
+
+
+	Query results (100 results): 
+
+
+__________________________________________________________________________________
+
+2022-11-24 01:14:19,426 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+
+	Query 5 of run 9 has been executed in 0,065080 seconds.
+
+	Query string:
+
+  prefix bsbm:
+<http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/>
+ prefix bsbm-inst:
+<http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/>
+ prefix rev: <http://purl.org/stuff/rev#>
+ prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+
+ Select ?country ?product ?nrOfReviews ?avgPrice
+ {
+   { Select ?country (max(?nrOfReviews) As ?maxReviews)
+     {
+       { Select ?country ?product (count(?review) As ?nrOfReviews)
+         {
+           ?product a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType9> .
+           ?review bsbm:reviewFor ?product ;
+                   rev:reviewer ?reviewer .
+           ?reviewer bsbm:country ?country .
+         }
+         Group By ?country ?product
+       }
+     }
+     Group By ?country
+   }
+   { Select ?product (avg(?price) As ?avgPrice)
+     {
+       ?product a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType9> .
+       ?offer bsbm:product ?product .
+       ?offer bsbm:price ?price .
+     }
+     Group By ?product
+   }
+   { Select ?country ?product (count(?review) As ?nrOfReviews)
+     {
+       ?product a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType9> .
+       ?review bsbm:reviewFor ?product .
+       ?review rev:reviewer ?reviewer .
+       ?reviewer bsbm:country ?country .
+     }
+     Group By ?country ?product
+   }
+   FILTER(?nrOfReviews=?maxReviews)
+ }
+ Order By desc(?nrOfReviews) ?country ?product
+
+
+
+	Query results (34 results): 
+
+
+__________________________________________________________________________________
+
+2022-11-24 01:14:19,846 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+
+	Query 6 of run 9 has been executed in 0,405389 seconds.
+
+	Query string:
+
+  prefix bsbm: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/>
+  prefix bsbm-inst: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/>
+  prefix rev: <http://purl.org/stuff/rev#>
+  prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+
+  Select ?reviewer (avg(xsd:float(?score)) As ?reviewerAvgScore)
+  {
+    { Select (avg(xsd:float(?score)) As ?avgScore)
+      {
+        ?product bsbm:producer <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromProducer514/Producer514> .
+        ?review bsbm:reviewFor ?product .
+        { ?review bsbm:rating1 ?score . } UNION
+        { ?review bsbm:rating2 ?score . } UNION
+        { ?review bsbm:rating3 ?score . } UNION
+        { ?review bsbm:rating4 ?score . }
+      }
+    }
+    ?product bsbm:producer <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromProducer514/Producer514> .
+    ?review bsbm:reviewFor ?product .
+    ?review rev:reviewer ?reviewer .
+    { ?review bsbm:rating1 ?score . } UNION
+    { ?review bsbm:rating2 ?score . } UNION
+    { ?review bsbm:rating3 ?score . } UNION
+    { ?review bsbm:rating4 ?score . }
+  }
+  Group By ?reviewer
+  Having (avg(xsd:float(?score)) > min(?avgScore) * 1.5)
+
+
+	Query results (58 results): 
+
+
+__________________________________________________________________________________
+
+2022-11-24 01:14:19,850 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+
+	Query 7 of run 9 has been executed in 0,009707 seconds.
+
+	Query string:
+
+  prefix bsbm: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/>
+  prefix bsbm-inst: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/>
+  prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+
+  Select ?product
+  {
+    { Select ?product
+      { 
+        { Select ?product (count(?offer) As ?offerCount)
+          { 
+            ?product a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType75> .
+            ?offer bsbm:product ?product .
+          }
+          Group By ?product
+        }
+      }
+      Order By desc(?offerCount)
+      Limit 1000
+    }
+    FILTER NOT EXISTS
+    {
+      ?offer bsbm:product ?product .
+      ?offer bsbm:vendor ?vendor .
+      ?vendor bsbm:country ?country .
+      FILTER(?country=<http://downlode.org/rdf/iso-3166/countries#RU>)
+    }
+  }
+
+
+	Query results (149 results): 
+
+
+__________________________________________________________________________________
+
+2022-11-24 01:14:20,007 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+
+	Query 8 of run 9 has been executed in 0,153045 seconds.
+
+	Query string:
+
+  prefix bsbm: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/>
+  prefix bsbm-inst: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/>
+  prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+
+  Select ?vendor (xsd:float(?belowAvg)/?offerCount As ?cheapExpensiveRatio)
+  {
+    { Select ?vendor (count(?offer) As ?belowAvg)
+      {
+        { ?product a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType2> .
+          ?offer bsbm:product ?product .
+          ?offer bsbm:vendor ?vendor .
+          ?offer bsbm:price ?price .
+          { Select ?product (avg(?price) As ?avgPrice)
+            {
+              ?product a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType2> .
+              ?offer bsbm:product ?product .
+              ?offer bsbm:price ?price .
+            }
+            Group By ?product
+          }
+        } .
+        FILTER (?price < ?avgPrice)
+      }
+      Group By ?vendor
+    }
+    { Select ?vendor (count(?offer) As ?offerCount)
+      {
+        ?product a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType2> .
+        ?offer bsbm:product ?product .
+        ?offer bsbm:vendor ?vendor .
+      }
+      Group By ?vendor
+    }
+  }
+  Order by desc(xsd:float(?belowAvg)/?offerCount) ?vendor
+  limit 10
+
+
+	Query results (0 results): 
+
+
+__________________________________________________________________________________
+
+2022-11-24 01:14:20,007 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+
+	Query 1 of run 10 has been executed in 0,011370 seconds.
+
+	Query string:
+
+prefix bsbm: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/>
+prefix rev: <http://purl.org/stuff/rev#>
+
+Select ?productType ?reviewCount
+{
+ { Select ?productType (count(?review) As ?reviewCount)
+  {
+   ?productType a bsbm:ProductType .
+   ?product a ?productType .
+   ?product bsbm:producer ?producer .
+   ?producer bsbm:country <http://downlode.org/rdf/iso-3166/countries#US> .
+   ?review bsbm:reviewFor ?product .
+   ?review rev:reviewer ?reviewer .
+   ?reviewer bsbm:country <http://downlode.org/rdf/iso-3166/countries#FR> .
+  }
+  Group By ?productType
+ }
+}
+Order By desc(?reviewCount) ?productType
+Limit 10
+
+
+	Query results (10 results): 
+
+
+__________________________________________________________________________________
+
+2022-11-24 01:14:20,022 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+
+	Query 2 of run 10 has been executed in 0,013019 seconds.
+
+	Query string:
+
+  prefix bsbm: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/> 
+
+  SELECT ?otherProduct ?sameFeatures
+  {
+    ?otherProduct a bsbm:Product .
+    FILTER(?otherProduct != <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromProducer273/Product13387>)
+    {
+      SELECT ?otherProduct (count(?otherFeature) As ?sameFeatures)
+      {
+        <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromProducer273/Product13387> bsbm:productFeature ?feature .
+        ?otherProduct bsbm:productFeature ?otherFeature .
+        FILTER(?feature=?otherFeature)
+      }
+      Group By ?otherProduct
+    }
+  }
+  Order By desc(?sameFeatures) ?otherProduct
+  Limit 10
+
+
+	Query results (10 results): 
+
+
+__________________________________________________________________________________
+
+2022-11-24 01:14:20,085 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+
+	Query 3 of run 10 has been executed in 0,059659 seconds.
+
+	Query string:
+
+  prefix bsbm: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/>
+  prefix bsbm-inst: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/>
+  prefix rev: <http://purl.org/stuff/rev#>
+  prefix dc: <http://purl.org/dc/elements/1.1/>
+  prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+
+  Select ?product (xsd:float(?monthCount)/?monthBeforeCount As ?ratio)
+  {
+    { Select ?product (count(?review) As ?monthCount)
+      {
+        ?review bsbm:reviewFor ?product .
+        ?review dc:date ?date .
+        Filter(?date >= "2007-12-13"^^<http://www.w3.org/2001/XMLSchema#date> && ?date < "2008-01-10"^^<http://www.w3.org/2001/XMLSchema#date>) 
+      }
+      Group By ?product
+    }  {
+      Select ?product (count(?review) As ?monthBeforeCount)
+      {
+        ?review bsbm:reviewFor ?product .
+        ?review dc:date ?date .
+        Filter(?date >= "2007-11-15"^^<http://www.w3.org/2001/XMLSchema#date> && ?date < "2007-12-13"^^<http://www.w3.org/2001/XMLSchema#date>) #
+      }
+      Group By ?product
+      Having (count(?review)>0)
+    }
+  }
+  Order By desc(xsd:float(?monthCount) / ?monthBeforeCount) ?product
+  Limit 10
+
+
+	Query results (10 results): 
+
+
+__________________________________________________________________________________
+
+2022-11-24 01:14:20,250 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+
+	Query 4 of run 10 has been executed in 0,164486 seconds.
+
+	Query string:
+
+prefix bsbm:<http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/>
+prefix bsbm-inst:<http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/>
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+
+ 
+ Select ?feature (((?sumF*(?countTotal-?countF))/(?countF*(?sumTotal-?sumF))) As ?priceRatio)
+  {
+    { Select (count(?price) As ?countTotal) (sum(xsd:float(xsd:string(?price))) As ?sumTotal)
+      {
+        ?product a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType7> .
+        ?offer bsbm:product ?product ;
+               bsbm:price ?price .
+      }
+    }
+    { Select ?feature (count(?price2) As ?countF) (sum(xsd:float(xsd:string(?price2))) As ?sumF)
+      {
+        ?product2 a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType7> ;
+                 bsbm:productFeature ?feature .
+        ?offer2 bsbm:product ?product2 ;
+               bsbm:price ?price2 .
+      }
+      Group By ?feature
+    }
+  }
+ Order By desc(?priceRatio) ?feature
+ Limit 100
+
+
+	Query results (100 results): 
+
+
+__________________________________________________________________________________
+
+2022-11-24 01:14:20,312 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+
+	Query 5 of run 10 has been executed in 0,059780 seconds.
+
+	Query string:
+
+  prefix bsbm:
+<http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/>
+ prefix bsbm-inst:
+<http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/>
+ prefix rev: <http://purl.org/stuff/rev#>
+ prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+
+ Select ?country ?product ?nrOfReviews ?avgPrice
+ {
+   { Select ?country (max(?nrOfReviews) As ?maxReviews)
+     {
+       { Select ?country ?product (count(?review) As ?nrOfReviews)
+         {
+           ?product a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType10> .
+           ?review bsbm:reviewFor ?product ;
+                   rev:reviewer ?reviewer .
+           ?reviewer bsbm:country ?country .
+         }
+         Group By ?country ?product
+       }
+     }
+     Group By ?country
+   }
+   { Select ?product (avg(?price) As ?avgPrice)
+     {
+       ?product a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType10> .
+       ?offer bsbm:product ?product .
+       ?offer bsbm:price ?price .
+     }
+     Group By ?product
+   }
+   { Select ?country ?product (count(?review) As ?nrOfReviews)
+     {
+       ?product a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType10> .
+       ?review bsbm:reviewFor ?product .
+       ?review rev:reviewer ?reviewer .
+       ?reviewer bsbm:country ?country .
+     }
+     Group By ?country ?product
+   }
+   FILTER(?nrOfReviews=?maxReviews)
+ }
+ Order By desc(?nrOfReviews) ?country ?product
+
+
+
+	Query results (18 results): 
+
+
+__________________________________________________________________________________
+
+2022-11-24 01:14:20,579 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+
+	Query 6 of run 10 has been executed in 0,262924 seconds.
+
+	Query string:
+
+  prefix bsbm: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/>
+  prefix bsbm-inst: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/>
+  prefix rev: <http://purl.org/stuff/rev#>
+  prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+
+  Select ?reviewer (avg(xsd:float(?score)) As ?reviewerAvgScore)
+  {
+    { Select (avg(xsd:float(?score)) As ?avgScore)
+      {
+        ?product bsbm:producer <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromProducer1216/Producer1216> .
+        ?review bsbm:reviewFor ?product .
+        { ?review bsbm:rating1 ?score . } UNION
+        { ?review bsbm:rating2 ?score . } UNION
+        { ?review bsbm:rating3 ?score . } UNION
+        { ?review bsbm:rating4 ?score . }
+      }
+    }
+    ?product bsbm:producer <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromProducer1216/Producer1216> .
+    ?review bsbm:reviewFor ?product .
+    ?review rev:reviewer ?reviewer .
+    { ?review bsbm:rating1 ?score . } UNION
+    { ?review bsbm:rating2 ?score . } UNION
+    { ?review bsbm:rating3 ?score . } UNION
+    { ?review bsbm:rating4 ?score . }
+  }
+  Group By ?reviewer
+  Having (avg(xsd:float(?score)) > min(?avgScore) * 1.5)
+
+
+	Query results (22 results): 
+
+
+__________________________________________________________________________________
+
+2022-11-24 01:14:20,579 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+
+	Query 7 of run 10 has been executed in 0,010334 seconds.
+
+	Query string:
+
+  prefix bsbm: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/>
+  prefix bsbm-inst: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/>
+  prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+
+  Select ?product
+  {
+    { Select ?product
+      { 
+        { Select ?product (count(?offer) As ?offerCount)
+          { 
+            ?product a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType35> .
+            ?offer bsbm:product ?product .
+          }
+          Group By ?product
+        }
+      }
+      Order By desc(?offerCount)
+      Limit 1000
+    }
+    FILTER NOT EXISTS
+    {
+      ?offer bsbm:product ?product .
+      ?offer bsbm:vendor ?vendor .
+      ?vendor bsbm:country ?country .
+      FILTER(?country=<http://downlode.org/rdf/iso-3166/countries#US>)
+    }
+  }
+
+
+	Query results (3 results): 
+
+
+__________________________________________________________________________________
+
+2022-11-24 01:14:20,610 ALL   [main] benchmark.testdriver.SPARQLConnection: 
+
+	Query 8 of run 10 has been executed in 0,026163 seconds.
+
+	Query string:
+
+  prefix bsbm: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/>
+  prefix bsbm-inst: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/>
+  prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+
+  Select ?vendor (xsd:float(?belowAvg)/?offerCount As ?cheapExpensiveRatio)
+  {
+    { Select ?vendor (count(?offer) As ?belowAvg)
+      {
+        { ?product a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType63> .
+          ?offer bsbm:product ?product .
+          ?offer bsbm:vendor ?vendor .
+          ?offer bsbm:price ?price .
+          { Select ?product (avg(?price) As ?avgPrice)
+            {
+              ?product a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType63> .
+              ?offer bsbm:product ?product .
+              ?offer bsbm:price ?price .
+            }
+            Group By ?product
+          }
+        } .
+        FILTER (?price < ?avgPrice)
+      }
+      Group By ?vendor
+    }
+    { Select ?vendor (count(?offer) As ?offerCount)
+      {
+        ?product a <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductType63> .
+        ?offer bsbm:product ?product .
+        ?offer bsbm:vendor ?vendor .
+      }
+      Group By ?vendor
+    }
+  }
+  Order by desc(xsd:float(?belowAvg)/?offerCount) ?vendor
+  limit 10
+
+
+	Query results (0 results): 
+
+
+__________________________________________________________________________________
+
+2022-11-24 01:14:20,626 ALL   [main] benchmark.testdriver.TestDriver: Scale factor:           70812
+Number of warmup runs:  25
+Seed:                   9834533
+Number of query mix runs (without warmups): 10 times
+min/max Querymix runtime: 0.4886s / 1.3788s
+Total runtime:          8.144 seconds
+QMpH:                   4420.16 query mixes per hour
+CQET:                   0.81445 seconds average runtime of query mix
+CQET (geom.):           0.76486 seconds geometric mean runtime of query mix
+
+Metrics for Query:      1
+Count:                  10 times executed in whole run
+AQET:                   0.021258 seconds (arithmetic mean)
+AQET(geom.):            0.017932 seconds (geometric mean)
+QPS:                    47.04 Queries per second
+minQET/maxQET:          0.01137030s / 0.06600650s
+Average result count:   10.00
+min/max result count:   10 / 10
+Number of timeouts:     0
+
+Metrics for Query:      2
+Count:                  10 times executed in whole run
+AQET:                   0.013878 seconds (arithmetic mean)
+AQET(geom.):            0.013765 seconds (geometric mean)
+QPS:                    72.06 Queries per second
+minQET/maxQET:          0.01100370s / 0.01676230s
+Average result count:   10.00
+min/max result count:   10 / 10
+Number of timeouts:     0
+
+Metrics for Query:      3
+Count:                  10 times executed in whole run
+AQET:                   0.068357 seconds (arithmetic mean)
+AQET(geom.):            0.059304 seconds (geometric mean)
+QPS:                    14.63 Queries per second
+minQET/maxQET:          0.01813520s / 0.13115230s
+Average result count:   10.00
+min/max result count:   10 / 10
+Number of timeouts:     0
+
+Metrics for Query:      4
+Count:                  10 times executed in whole run
+AQET:                   0.058936 seconds (arithmetic mean)
+AQET(geom.):            0.050670 seconds (geometric mean)
+QPS:                    16.97 Queries per second
+minQET/maxQET:          0.03022590s / 0.16448590s
+Average result count:   96.40
+min/max result count:   82 / 100
+Number of timeouts:     0
+
+Metrics for Query:      5
+Count:                  10 times executed in whole run
+AQET:                   0.065385 seconds (arithmetic mean)
+AQET(geom.):            0.065148 seconds (geometric mean)
+QPS:                    15.29 Queries per second
+minQET/maxQET:          0.05978010s / 0.07827520s
+Average result count:   28.50
+min/max result count:   18 / 39
+Number of timeouts:     0
+
+Metrics for Query:      6
+Count:                  10 times executed in whole run
+AQET:                   0.358138 seconds (arithmetic mean)
+AQET(geom.):            0.332717 seconds (geometric mean)
+QPS:                    2.79 Queries per second
+minQET/maxQET:          0.19882360s / 0.73806240s
+Average result count:   31.50
+min/max result count:   4 / 71
+Number of timeouts:     0
+
+Metrics for Query:      7
+Count:                  10 times executed in whole run
+AQET:                   0.013158 seconds (arithmetic mean)
+AQET(geom.):            0.011350 seconds (geometric mean)
+QPS:                    76.00 Queries per second
+minQET/maxQET:          0.00709860s / 0.02805060s
+Average result count:   41.50
+min/max result count:   0 / 149
+Number of timeouts:     0
+
+Metrics for Query:      8
+Count:                  10 times executed in whole run
+AQET:                   0.215340 seconds (arithmetic mean)
+AQET(geom.):            0.099109 seconds (geometric mean)
+QPS:                    4.64 Queries per second
+minQET/maxQET:          0.01261330s / 0.47912280s
+Average result count:   0.00
+min/max result count:   0 / 0
+Number of timeouts:     0
+
+
