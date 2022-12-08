@@ -1,0 +1,10 @@
+productfeature: Query returned successfully in 1 secs 5 msec.
+producttype: Query returned successfully in 38 msec.
+producer: Query returned successfully in 35 msec.
+prodcut: Query returned successfully in 142 msec.
+producttypeproduct: Query returned successfully in 44 msec.
+productfeatureproduct: Query returned successfully in 700 msec.
+vendor: Query returned successfully in 35 msec.
+offer: Query returned successfully in 4 secs 38 msec.
+person: Query returned successfully in 50 msec.
+review: Query returned successfully in 891 msec.
